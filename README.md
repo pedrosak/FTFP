@@ -12,3 +12,5 @@ Team:	Kurt Pedrosa
 Repository maintained by Tito Bogran.
 
 For more information about this project direct any questions to pedrosak@erau.edu
+
+This is a test commit.
