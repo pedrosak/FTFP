@@ -9,6 +9,6 @@ Team:	Kurt Pedrosa
 	Kok Peng Tan
 	Tito Bogran
 
-Repository maintained by Kurt Pedrosa.
+Repository maintained by Tito Bogran.
 
 For more information about this project direct any questions to pedrosak@erau.edu
