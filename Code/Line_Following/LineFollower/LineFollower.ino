@@ -6,7 +6,7 @@
 
 //Definitions
 #define NUMBER_OF_SENSORS 6                    //Number of Sensors being used
-#define TIMEOUT           2500                 //2500 microseconds for sensor output to go low
+#define TIMEOUT           1500                 //2500 microseconds for sensor output to go low
 #define EMITTER_PIN       2                    //LEDON pin. Always one, turn off to save power
 
 
@@ -27,9 +27,8 @@ double setPoint,
        input,
        output;
 //PID instaqnce with parameters
-PID lineFollowingPID(&input, &output, &setPoint,1,0,0, DIRECT);
+PID lineFollowingPID(&input, &output, &setPoint,10,1,100, DIRECT);
 
-int error;
 
 void setup()
 {
@@ -39,7 +38,7 @@ void setup()
   //they are in relation to the line.
   delay(500);                                  //Delay of 500 miliseconds
   pinMode(13, OUTPUT);
-  
+
   //Calibration
   digitalWrite(13, HIGH);                      //Sets the arduino board LED to HIGH
   for (int i = 0; i <400; i++)
@@ -48,9 +47,9 @@ void setup()
   }
   digitalWrite(13, LOW);                       //Sets arduino borad LED to LOW to signal end of calibration
   //End Calibration
-  
+
   Serial.begin(9600);
-  
+
  ///////////////////////////////////////////////////////////////////////////////
   //Display of sensor calibration minimal value readings
   for (int i = 0; i < NUMBER_OF_SENSORS; i++)
@@ -59,7 +58,7 @@ void setup()
     Serial.print(' ');
   }
   Serial.println();
- 
+
   //Display of sensor calibration maximum value readings
   for (int i = 0; i < NUMBER_OF_SENSORS; i++)
   {
@@ -67,19 +66,20 @@ void setup()
     Serial.print(' ');
   }
   Serial.println();
-  Serial.println();
-  delay(1000);                                 //delay for 1000 microseconds
+
+  //delay(1000);                                 //delay for 1000 microseconds
 /////////////////////////////////////////////////////////////////////////////////
 
   motorShield.begin();                         //Default frequency of 1.6KHz
-  leftMotor->setSpeed(50);                    //Speed of the left motor -- 0 (stopped) - 255 (full speed)
-  rightMotor->setSpeed(50);                   //Speed of the left motor -- 0 (stopped) - 255 (full speed)
-  goForward();
-
+ // leftMotor->setSpeed(50);                    //Speed of the left motor -- 0 (stopped) - 255 (full speed)
+ // rightMotor->setSpeed(50);                   //Speed of the left motor -- 0 (stopped) - 255 (full speed)
+  leftMotor->run(FORWARD);
+  rightMotor->run(FORWARD);
+  
   //PID
   setPoint = 2500;                             //Sensor posistion when sensor 4 and sensor 3 are on the line.
   lineFollowingPID.SetMode(AUTOMATIC);
-  lineFollowingPID.SetOutputLimits(-2500, 2500);
+  lineFollowingPID.SetOutputLimits(-900, 900);
   lineFollowingPID.SetSampleTime(10);
 }
 void loop()
@@ -89,15 +89,8 @@ void loop()
   unsigned int position = sensors.readLine(sensorValues);
   input = position;
   lineFollowingPID.Compute();
-  
-  if(output == 0){
-    goForward();
-  } else if (output > 1000){
-    turnRight();
-  } else if (output < 1000){
-    turnLeft();
-  }
 
+  move(output);
 /////////////////////////////////////////////////////////////////////////////////////////////
   //Print sensor values of 0 to 1000. from most reflective (0) to lest reflective (1000)
     for (unsigned char i = 0; i < NUMBER_OF_SENSORS; i++)
@@ -107,50 +100,20 @@ void loop()
   }
   Serial.println(position);
   Serial.println(output);
-  delay(100);            //Delay of 100 microseconds
+  //delay(100);            //Delay of 100 microseconds
 /////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 
 
-//Motor movement fucntions
-//Forward
-int goForward()
+//Motor movement fucntion
+int move(int output)
 {
+  int ratio;
+
+  ratio = map(output, -1250,1250, -50, 50);
   leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
-  Serial.println("Forward");
-  return 1;
-}
-//Backward
-int goBackwards()
-{
-  leftMotor->run(BACKWARD);
-  rightMotor->run(BACKWARD);
-  Serial.println("Backwards");
-  return 1;
-}
-//Turn Left
-int turnLeft()
-{
-  leftMotor->run(RELEASE);
-  rightMotor->run(FORWARD);
-  Serial.println("Left");
-  return 1;
-}
-//Turn Right
-int turnRight()
-{
-  leftMotor->run(FORWARD);
-  rightMotor->run(RELEASE);
-  Serial.println("Right");
-  return 1;
-}
-//Rotate
-int rotate()
-{
-  leftMotor->run(FORWARD);
-  rightMotor->run(BACKWARD);
-  Serial.println("Rotate");
-  return 1;
+  leftMotor->setSpeed(60 + ratio);
+  rightMotor->setSpeed(60 - ratio);
 }
