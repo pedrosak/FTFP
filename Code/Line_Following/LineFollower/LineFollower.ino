@@ -72,8 +72,8 @@ void setup()
 /////////////////////////////////////////////////////////////////////////////////
 
   motorShield.begin();                         //Default frequency of 1.6KHz
-  leftMotor->setSpeed(100);                    //Speed of the left motor -- 0 (stopped) - 255 (full speed)
-  rightMotor->setSpeed(100);                   //Speed of the left motor -- 0 (stopped) - 255 (full speed)
+  leftMotor->setSpeed(50);                    //Speed of the left motor -- 0 (stopped) - 255 (full speed)
+  rightMotor->setSpeed(50);                   //Speed of the left motor -- 0 (stopped) - 255 (full speed)
   goForward();
 
   //PID
