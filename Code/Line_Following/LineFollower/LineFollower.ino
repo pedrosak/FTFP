@@ -111,9 +111,9 @@ int move(int output)
 {
   int ratio;
 
-  ratio = map(output, -1250,1250, -50, 50);
+  ratio = map(output, -900,900, -50, 50);
   leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
-  leftMotor->setSpeed(60 + ratio);
-  rightMotor->setSpeed(60 - ratio);
+  leftMotor->setSpeed(65 + ratio);
+  rightMotor->setSpeed(65 - ratio);
 }
