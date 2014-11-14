@@ -1,0 +1,82 @@
+#include <QTRSensors.h>                        //sensor array Polulo library
+#include <Wire.h>
+#include <Adafruit_MotorShield.h>              //Adafruit motoshield library
+#include "utility/Adafruit_PWMServoDriver.h"   //Required for motorshield use
+#include <PID_v1.h>                            //PID library (www.playground.arduino.cc/Code/PIDLibrary)
+
+//Definitions
+#define NUMBER_OF_SENSORS 6                    //Number of Sensors being used
+#define TIMEOUT           1500                 //2500 microseconds for sensor output to go low
+#define EMITTER_PIN       2                    //LEDON pin. Always one, turn off to save power
+
+//Create motoshield object
+Adafruit_MotorShield motorShield = Adafruit_MotorShield();
+
+//Sensor pins input.
+QTRSensorsRC sensors((unsigned char[]) {3, 4, 5, 6, 7, 9}, NUMBER_OF_SENSORS, TIMEOUT, EMITTER_PIN);
+//Motor port instance and port assigmnet
+Adafruit_DCMotor *leftMotor = motorShield.getMotor(1);
+Adafruit_DCMotor *rightMotor = motorShield.getMotor(2);
+Adafruit_DCMotor *centerMotor = motorShield.getMotor(2);
+
+//Variable array holding sensor values
+unsigned int sensorValues[NUMBER_OF_SENSORS];
+
+//PID Variables
+double setPoint,
+       input,
+       output;
+//PID instaqnce with parameters
+PID lineFollowingPID(&input, &output, &setPoint,10,1,100, DIRECT);
+
+
+void setup()
+{
+  pinMode(13, OUTPUT);
+  //Calibration
+  digitalWrite(13, HIGH);                      //Sets the arduino board LED to HIGH
+  for (int i = 0; i <400; i++)
+  {
+   sensors.calibrate();                        //Reads all sensors 10 times for the TIMEOUT time (if TIMEOUT = 2500 microseconds then 25 ms per call)
+  }
+  digitalWrite(13, LOW);                       //Sets arduino borad LED to LOW to signal end of calibration
+  //End Calibration
+
+  Serial.begin(9600);
+
+  //Motor configuration
+  leftMotor->(RELEASE);
+  rightMotor->(RELEASE);
+  centerMotor->(RELEASE);
+
+  //PID
+  setPoint = 2500;
+  lineFollowingPID.SetMode(AUTOMATIC);
+  lineFollowingPID.SetOutputLimits(-900, 900);
+  lineFollowingPID.SetSampleTime(10);
+}
+
+void loop()
+{
+  //Line Position. Values from 0 to 5000
+  //If line over sensor 6 alone position value should read 5000
+  unsigned int position = sensors.readLine(sensorValues);
+  input = position;
+  lineFollowingPID.Compute();
+
+  move(output);
+}
+
+//Motor movement fucntion
+int move(int output)
+{
+  int ratio;
+
+  ratio = map(output, -900,900, -50, 50);
+  leftMotor->run(FORWARD);
+  rightMotor->run(FORWARD);
+  centerMotor->run(FORWARD);
+  leftMotor->setSpeed(65 + ratio);
+  rightMotor->setSpeed(65 - ratio);
+  centerMotor->setSpeed(0);
+}
