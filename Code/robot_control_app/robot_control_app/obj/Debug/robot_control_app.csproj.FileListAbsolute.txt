@@ -1,0 +1,9 @@
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\bin\Debug\robot_control_app.exe.config
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\bin\Debug\robot_control_app.exe
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\bin\Debug\robot_control_app.pdb
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\obj\Debug\robot_control_app.csprojResolveAssemblyReference.cache
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\obj\Debug\robot_control_app.Form1.resources
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\obj\Debug\robot_control_app.Properties.Resources.resources
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\obj\Debug\robot_control_app.csproj.GenerateResource.Cache
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\obj\Debug\robot_control_app.exe
+c:\users\mary\documents\visual studio 2013\Projects\robot_control_app\robot_control_app\obj\Debug\robot_control_app.pdb
