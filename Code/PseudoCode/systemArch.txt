@@ -1,0 +1,28 @@
+-Function to monitor LED/initialize system
+-Go into line following
+	-need to implement this in such a way that we can add camera for junction detection
+-Function to handle arrival at box
+	-Most of Brian's object detection can be reused
+	-Need to determine if we want an ultrasonic or not
+	-Need functions that move robot based on inches
+		-Forward(int distance), etc.
+-Function to handle each challenge
+-Function to handle departure
+-"Master" function: this will call all sub functions based on flags
+-array for challenges that have been completed
+	-can help to prevent false positives
+-junction detection with camera
+	-add in flow, initialization to pi
+		-Brian
+
+
+-Objects  that should be created (Will help to reduce the amount of code in the "main" file)
+	-Challenges
+		-something like "if we see simon, call Challenges.simon"
+	-TaskArea
+		-Anything relating to do with being in the task area
+		-ex: TaskArea.approachChallenge();
+		-All challenges objects and things could be called from inside this object/class
+	-Movement
+		-Anything relating to movement will reside here
+		-ex: Movement.foward(1);
