@@ -6,7 +6,7 @@
 
 //Definitions
 #define NUMBER_OF_SENSORS 6                    //Number of Sensors being used
-#define TIMEOUT           1500                 //2500 microseconds for sensor output to go low
+#define TIMEOUT           2500                 //2500 microseconds for sensor output to go low
 #define EMITTER_PIN       2                    //LEDON pin. Always one, turn off to save power
 
 
@@ -77,7 +77,7 @@ void setup()
   rightMotor->run(FORWARD);
   
   //PID
-  setPoint = 2500;                             //Sensor posistion when sensor 4 and sensor 3 are on the line.
+  setPoint = 2343;                             //Sensor posistion when sensor 4 and sensor 3 are on the line.
   lineFollowingPID.SetMode(AUTOMATIC);
   lineFollowingPID.SetOutputLimits(-900, 900);
   lineFollowingPID.SetSampleTime(10);
@@ -86,7 +86,8 @@ void loop()
 {
   //Line Position. Values from 0 to 5000
   //If line over sensor 6 alone position value should read 5000
-  unsigned int position = sensors.readLine(sensorValues);
+  unsigned int position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
+
   input = position;
   lineFollowingPID.Compute();
 
@@ -99,7 +100,7 @@ void loop()
     Serial.print('\t');
   }
   Serial.println(position);
-  Serial.println(output);
+  //Serial.println(output);
   //delay(100);            //Delay of 100 microseconds
 /////////////////////////////////////////////////////////////////////////////////////////////
 }
