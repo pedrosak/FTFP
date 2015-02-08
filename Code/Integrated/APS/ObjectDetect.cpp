@@ -15,55 +15,46 @@ ObjectDetect::ObjectDetect(int trigPin, int echoPin)
   pinMode(_pinI1,OUTPUT);
   pinMode(_pinI2,OUTPUT);
   pinMode(_speedpinA,OUTPUT);
-  
+
 }
 
-void ObjectDetect::Commence(NewPing sonar)
+//called to approach the object. Returns control one it is there. 
+bool ObjectDetect::Approach(NewPing sonar)
 {
-  int incomingByte;
-  delay(50);
   float uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-
-  if (((float)(uS / US_ROUNDTRIP_CM) >= 4.1 && (float)(uS / US_ROUNDTRIP_CM) <= 4.3) && !inRange)
+  while(((float)(uS / US_ROUNDTRIP_CM) >= 4.1 && (float)(uS / US_ROUNDTRIP_CM) <= 4.3))
   {
-    inRange = true;
-    forward();
-    Serial.write('C');
+    delay(50);
+    _support.Creep();
   }
 
-  while (inRange && !completed)
-  {
-    while (Serial.available() > 0)
+  return true;
+}
+
+
+int ObjectDetect::IdentifyAndAlign()
+{
+    while (Serial.available() > 0) //blocking serial call
     {
-      incomingByte = Serial.read();
+      int incomingByte = Serial.read();
       if (incomingByte == 'X')
       {
         //digitalWrite(LED, HIGH);
-        shuffle();
+        float dist = Serial.parseFloat();
+        _support.Shuffle(dist);
+        Serial.write('M');
         //digitalWrite(LED, LOW);
       }
       else if (incomingByte > 48 && incomingByte < 52)
       {
-        whatObj(incomingByte);
-      }
-
-      if (completed)
-      {
-        backward();
-        Serial.write('C');
+        return incomingByte-48;
       }
     }
-
-  }
-
-
 }
 
-//used to determine where we're moving to. Need to put in values as to how far to move
-//laterally
-void ObjectDetect::whatObj(int incomingByte)
+//used for handshaking with Pi. Just lets it know we're alright
+void ObjectDetect::WhatObj(int incomingByte)
 {
-  incomingByte = incomingByte - 48;
   switch (incomingByte)
   {
   case 1:
@@ -82,8 +73,6 @@ void ObjectDetect::whatObj(int incomingByte)
       break;
     }
   }
-  completed = true;
-
 }
 
 void ObjectDetect::forward()
@@ -99,18 +88,5 @@ void ObjectDetect::backward()//
   digitalWrite(_pinI1, LOW);
 }
 
-void ObjectDetect::shuffle()
-{
-  Serial.parseFloat();
-  //Do movement things
-  delay(1000);
-  Serial.write('M');
-  //digitalWrite(etch, LOW);
 
-}
-
-void ObjectDetect::reset()
-{
-  completed = false; 
-}
 
