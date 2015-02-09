@@ -34,6 +34,8 @@ bool ObjectDetect::Approach(NewPing sonar)
 
 int ObjectDetect::IdentifyAndAlign()
 {
+  while(true)
+  {
     while (Serial.available() > 0) //blocking serial call
     {
       int incomingByte = Serial.read();
@@ -50,6 +52,7 @@ int ObjectDetect::IdentifyAndAlign()
         return incomingByte-48;
       }
     }
+  }
 }
 
 //used for handshaking with Pi. Just lets it know we're alright
