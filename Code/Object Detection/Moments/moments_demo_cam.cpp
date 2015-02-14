@@ -89,15 +89,39 @@ int main(int, char** argv)
 		do
 		{
 			read(USB, &buf, 1);
-		} while (buf != 'C');
+		} while (buf != 'C' || buf !='J');
 		//response.append( &buf );
 		cout << "Camera on!: " << buf << endl;
 		tcflush(USB, TCIFLUSH);
-		capImage();
+		if(buf == 'C')
+			capImage();
+		else if(buf == 'J')
+			junction();
 	}
 
 }
 
+void junction()
+{
+
+	capture.open(-1);
+	char cam_buf = '\0';
+	cout << "Capturing image" << endl;
+	if (!capture.isOpened()) { printf("--(!)Error opening video capture\n"); return; }
+	while (capture.read(src))
+	{
+
+		if (src.empty())
+		{
+			printf(" --(!) No captured frame -- Break!");
+			return;
+		}
+
+		//code to detect junction goes here.	
+
+	}
+
+}
 
 void capImage()
 {
@@ -149,7 +173,7 @@ void thresh_callback(int, void*)
 	vector<Moments> mu(contours.size());
 	vector<double> area(contours.size());
 	vector<double> arcs(contours.size());
-	
+
 	//vector<double> areaSorted(contours.size());
 	//vector<double> arcSorted(contours.size());
 
@@ -188,7 +212,7 @@ void thresh_callback(int, void*)
 	vector<int> needDrawing = whatObj(area, arcs, rubiks, etch, simon);
 	if (needDrawing.size() == 0)
 		return;
-	
+
 	if (*rubiks == 5 || *simon == 5 || *etch == 5)
 		printObject(needDrawing, mc);
 
@@ -209,7 +233,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 
 	for (size_t i = 0; i < area.size(); i++)
 	{
-		
+
 		if(area[i]>60000&&area[i]<76000)
 		{
 			e++;
@@ -225,8 +249,8 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 			s++;
 			sIdx.push_back(i);
 		}
-		
-		
+
+
 
 	}
 	cout << "e: " << e << "\tr: " << r << "\ts: " << s << endl;
@@ -315,7 +339,7 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		if (abs(average) > 30)
 		{
 			write(USB, "X", 1);
-			
+
 			printShuffle(average);
 		}
 		else
@@ -351,7 +375,7 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		if (abs(average) > 30)
 		{
 			write(USB, "X", 1);
-			
+
 			printShuffle(average);
 		}
 		else

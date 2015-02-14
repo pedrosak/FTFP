@@ -15,6 +15,7 @@ ObjectDetect::ObjectDetect(int trigPin, int echoPin)
   pinMode(_pinI1,OUTPUT);
   pinMode(_pinI2,OUTPUT);
   pinMode(_speedpinA,OUTPUT);
+  LED = 23;
 
 }
 
@@ -41,11 +42,11 @@ int ObjectDetect::IdentifyAndAlign()
       int incomingByte = Serial.read();
       if (incomingByte == 'X')
       {
-        //digitalWrite(LED, HIGH);
+        digitalWrite(LED, HIGH);
         float dist = Serial.parseFloat();
         _support.Shuffle(dist);
         Serial.write('M');
-        //digitalWrite(LED, LOW);
+        digitalWrite(LED, LOW);
       }
       else if (incomingByte > 48 && incomingByte < 52)
       {

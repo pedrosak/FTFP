@@ -19,8 +19,8 @@
 //testing is need to map everything at the speed we plan on running it at
 
 
-int trg=23;
-int echo=22;
+int echo=23;
+int trg=22;
 bool started = false;
 
 NewPing sonar(trg,echo,MAX_DISTANCE);
@@ -38,11 +38,15 @@ void loop()
   if(!started)
   {
     support.StartUp(); 
+    started = true;
   }
   //if we find a challenge zone
   support.Follow();
-  ObjDet.Approach(sonar);
+  //ObjDet.Approach(sonar);
   Serial.write('C');
+  digitalWrite(trg,HIGH);
+  delay(7000);
+  digitalWrite(trg,LOW);
   int obj = ObjDet.IdentifyAndAlign();
   ObjDet.WhatObj(obj);
   switch (obj)
@@ -57,6 +61,9 @@ void loop()
     {
       Serial.write('R');
       Cha.Rubiks();
+      digitalWrite(echo,HIGH);
+      delay(1000);
+      digitalWrite(echo,LOW);
       break;
     }
   case 3:
@@ -65,6 +72,7 @@ void loop()
       Cha.Simon();
       break;
     }
+      Serial.write('C');
   }
 
 

@@ -19,6 +19,7 @@ private:
   int _speedpinA;
   int _pinI1;
   int _pinI2;
+  int LED;
   void forward();
   void backward();
   Support _support;
