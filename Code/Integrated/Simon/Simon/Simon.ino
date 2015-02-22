@@ -4,6 +4,7 @@
 #include <Wire.h>
 #include <QueueArray.h>
 #include <Average.h>
+#include <Servo.h>
 
 
 int photocellPin = 0; // the cell and 10K pulldown are connected to a0
@@ -26,9 +27,15 @@ int maxPin;
 boolean start = false;
 boolean gameStarted = false;
 const int TIMEOUT = 1000; //timeout for an entire simon seqence
+const int PRESS_ANGLE = 100; //angle at which servo will actuate to press button
+const int REST_ANGLE = 180; //angle at which servo will rest
+Servo servoCenter;
+Servo servoRed;
+Servo servoBlue;
+Servo servoYellow;
+Servo servoGreen;
 
 int counter = 0;
-
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 
@@ -36,7 +43,8 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_StepperMotor *rotation = AFMS.getStepper(200, 1); // motor port #1 (M1 & M2)
 Adafruit_StepperMotor *z = AFMS.getStepper(200, 2); // motor port #2 (M3 & M4)
 
-void setup() {
+void setup() 
+{
   // We'll send debugging information via the Serial monitor
   Serial.begin(9600); 
 
@@ -45,6 +53,19 @@ void setup() {
   // Stepper Motors
   rotation->setSpeed(200);  // 200 rpm 
   z->setSpeed(200); 
+  
+  //Attach servos to pins (need to figure out what pins. 10 is just an example)
+  servoCenter.attach(10);
+  servoRed.attach(10);
+  servoBlue.attach(10);
+  servoYellow.attach(10);
+  servoGreen.attach(10);
+  servoCenter.write(REST_ANGLE);
+  servoRed.write(REST_ANGLE);
+  servoBlue.write(REST_ANGLE);
+  servoYellow.write(REST_ANGLE);
+  servoGreen.write(REST_ANGLE);
+  
 }
 
 void loop() {
@@ -64,7 +85,8 @@ void loop() {
    green - 3  
    */
 
-  for (int i = 0; i < 4; i++) { 
+  for (int i = 0; i < 4; i++) 
+  { 
     photocellVals[i] = analogRead(pinHolding[i]);
   } 
 
@@ -72,31 +94,37 @@ void loop() {
   maxPin = 0;
 
   //determine what pin is the highest
-  for (int i = 0; i < 4; i++) {
-    if (photocellVals[i] > currentMax) {
+  for (int i = 0; i < 4; i++) 
+  {
+    if (photocellVals[i] > currentMax) 
+    {
       currentMax = photocellVals[i];
       maxPin = i;
     } 
   }
 
   //if we're greater than some threshold
-  if (currentMax > cellThresholds[maxPin]) {
+  if (currentMax > cellThresholds[maxPin]) 
+  {
     colorSequence.push(maxPin+1);
     start = true;
     counter = 0;
   }
   //otherwise we need to increase our timer (counter)
-  else if (currentMax < cellThresholds[maxPin]) {
+  else if (currentMax < cellThresholds[maxPin]) 
+  {
     counter++;
   }
 
-  if ((counter > TIMEOUT) && (start == true)) { 
+  if ((counter > TIMEOUT) && (start == true)) 
+  { 
     Play(colorSequence);
   }
 }
 
 // Determine next stop
-void Play(QueueArray <int> colorSequence) {
+void Play(QueueArray <int> colorSequence) 
+{
 
   while(!colorSequence.isEmpty())
   {
@@ -124,27 +152,32 @@ void actuateServo(int servoNum)
 
   case 0:
     {
-
+      servoCenter.write(PRESS_ANGLE);
+      servoCenter.write(REST_ANGLE);
       break; 
     }
   case 1:
     {
-
+      servoRed.write(PRESS_ANGLE);
+      servoRed.write(REST_ANGLE);
       break; 
     }
   case 2:
     {
-
+      servoBlue.write(PRESS_ANGLE);
+      servoBlue.write(REST_ANGLE);
       break; 
     }
   case 3:
     {
-
+      servoYellow.write(PRESS_ANGLE);
+      servoYellow.write(REST_ANGLE);
       break; 
     }
   case 4:
     {
-
+      servoGreen.write(PRESS_ANGLE);
+      servoGreen.write(REST_ANGLE);
       break; 
     }
 
@@ -171,11 +204,3 @@ void startGame()
       actuateServo(0);
 }
 
-void pressButton() {
-  // Move claw down
-  z->step(50, BACKWARD, DOUBLE);  // Down //need to change these values for how far it moves down
-
-
-  // Move claw up
-  z->step(50, FORWARD, DOUBLE); // Up //need to change the values for the new system
-}

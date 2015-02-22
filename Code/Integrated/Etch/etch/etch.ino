@@ -1,3 +1,4 @@
+#include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
 
@@ -38,12 +39,12 @@ void Etch()
 {
   //in this instance, BACKWARD is clockwise and FORWARD is counter clock wise
   //this is with the outer coils on the lower motor controls
-  
+  /*
   //I
   right->step(1.5*STEPS,BACKWARD,DOUBLE);
   delay(500);
   right->step(1.5*STEPS,FORWARD,DOUBLE);
-  
+  */
   //3 Es
   for(int i = 0; i<3; i++)
   {
