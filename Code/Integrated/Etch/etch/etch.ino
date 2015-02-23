@@ -3,13 +3,14 @@
 
 
 Adafruit_MotorShield etch = Adafruit_MotorShield(0x61); // Rightmost jumper closed
+Adafruit_MotorShield etch2 = Adafruit_MotorShield(0x60);
 int STEPS = 68; //number of steps in a revolution for motor
 
 
 
 // Stepper motors
-Adafruit_StepperMotor *right = etch.getStepper(68, 1); // motor port #2 (M3 & M4)
-Adafruit_StepperMotor *left = etch.getStepper(68, 2); // motor port #1 (M1 & M2)
+Adafruit_StepperMotor *right = etch2.getStepper(68, 1); // motor port #2 (M3 & M4)
+Adafruit_StepperMotor *left = etch.getStepper(68, 1); // motor port #1 (M1 & M2)
 boolean complete = false;
 
 
