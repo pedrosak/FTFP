@@ -9,8 +9,8 @@ int STEPS = 68; //number of steps in a revolution for motor
 
 
 // Stepper motors
-Adafruit_StepperMotor *right = etch2.getStepper(68, 1); // motor port #2 (M3 & M4)
-Adafruit_StepperMotor *left = etch.getStepper(68, 1); // motor port #1 (M1 & M2)
+Adafruit_StepperMotor *right = etch2.getStepper(STEPS, 1); // motor port #2 (M3 & M4)
+Adafruit_StepperMotor *left = etch.getStepper(STEPS, 1); // motor port #1 (M1 & M2)
 boolean complete = false;
 
 
@@ -40,31 +40,22 @@ void Etch()
 {
   //in this instance, BACKWARD is clockwise and FORWARD is counter clock wise
   //this is with the outer coils on the lower motor controls
-  /*
+  
   //I
   right->step(1.5*STEPS,BACKWARD,DOUBLE);
-  delay(500);
   right->step(1.5*STEPS,FORWARD,DOUBLE);
-  */
+  
   //3 Es
   for(int i = 0; i<3; i++)
   {
     left->step(0.5*STEPS,BACKWARD,DOUBLE);
-    delay(500);
     right->step(1.5*STEPS,BACKWARD,DOUBLE);
-    delay(500);
     left->step(0.5*STEPS,BACKWARD,DOUBLE);
-    delay(500);
     left->step(0.5*STEPS,FORWARD,DOUBLE);
-    delay(500);
     right->step(0.75*STEPS,FORWARD,DOUBLE);
-    delay(500);
     left->step(0.5*STEPS,BACKWARD,DOUBLE);
-    delay(500);
     left->step(0.5*STEPS,FORWARD,DOUBLE);
-    delay(500);
     right->step(0.75*STEPS,FORWARD,DOUBLE);
-    delay(500);
     left->step(0.5*STEPS,BACKWARD,DOUBLE);
   }
   
