@@ -27,13 +27,14 @@ int maxPin;
 boolean start = false;
 boolean gameStarted = false;
 const int TIMEOUT = 1000; //timeout for an entire simon seqence
-const int PRESS_ANGLE = 100; //angle at which servo will actuate to press button
-const int REST_ANGLE = 180; //angle at which servo will rest
+const int PRESS_ANGLE = 50; //angle at which servo will actuate to press button
+const int REST_ANGLE = 100; //angle at which servo will rest
 Servo servoCenter;
 Servo servoRed;
 Servo servoBlue;
 Servo servoYellow;
 Servo servoGreen;
+char buffer[256];
 
 int counter = 0;
 
@@ -98,7 +99,7 @@ void loop() {
   {
     if (photocellVals[i] > currentMax) 
     {
-      currentMax = photocellVals[i];
+      currentMax = photcellVals[i];
       maxPin = i;
     } 
   }
@@ -106,12 +107,15 @@ void loop() {
   //if we're greater than some threshold
   if (currentMax > cellThresholds[maxPin]) 
   {
+    sprintf(buffer,"Current Max:%d\t MaxPin:%d\t cellThresholds[maxPin]: %d\n",currentMax,maxPin,cellThresholds[maxPin]);
+    Serial.print(buffer);
     colorSequence.push(maxPin+1);
     start = true;
     counter = 0;
+    
   }
   //otherwise we need to increase our timer (counter)
-  else if (currentMax < cellThresholds[maxPin]) 
+  else (currentMax < cellThresholds[maxPin]) 
   {
     counter++;
   }
@@ -119,6 +123,8 @@ void loop() {
   if ((counter > TIMEOUT) && (start == true)) 
   { 
     Play(colorSequence);
+    counter = 0;
+    start = false;
   }
 }
 
@@ -126,12 +132,13 @@ void loop() {
 void Play(QueueArray <int> colorSequence) 
 {
 
+  Serial.print("Color sequence length:");
+  Serial.println(colorSequence.count());
   while(!colorSequence.isEmpty())
   {
     actuateServo(colorSequence.pop());
   }
-  counter = 0;
-  start = false;
+
 }
 
 void actuateServo(int servoNum)
