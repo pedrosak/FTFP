@@ -54,7 +54,7 @@ void setup()
   // Stepper Motors
   rotation->setSpeed(200);  // 200 rpm 
   z->setSpeed(200); 
-  
+
   //Attach servos to pins (need to figure out what pins. 10 is just an example)
   servoCenter.attach(10);
   servoRed.attach(10);
@@ -66,7 +66,7 @@ void setup()
   servoBlue.write(REST_ANGLE);
   servoYellow.write(REST_ANGLE);
   servoGreen.write(REST_ANGLE);
-  
+
 }
 
 void loop() {
@@ -86,40 +86,50 @@ void loop() {
    green - 3  
    */
 
+  //realistically, we can do all the logic here. If the reading - calibration is greater than some number, we know its high.
+
   for (int i = 0; i < 4; i++) 
   { 
-    photocellVals[i] = analogRead(pinHolding[i]);
+    //photocellVals[i] = analogRead(pinHolding[i]);
+    if(analogRead(pinHolding[i])-cellThresholds[i]>50 /*some value*/)
+    {
+      colorSequence.push(i+1);
+      start = true;
+      counter = 0;
+    }
+    else
+    {
+      counter++;
+    }
   } 
 
+  /*
   currentMax = 0;
-  maxPin = 0;
-
-  //determine what pin is the highest
-  for (int i = 0; i < 4; i++) 
-  {
-    if (photocellVals[i] > currentMax) 
-    {
-      currentMax = photcellVals[i];
-      maxPin = i;
-    } 
-  }
-
-  //if we're greater than some threshold
-  if (currentMax > cellThresholds[maxPin]) 
-  {
-    sprintf(buffer,"Current Max:%d\t MaxPin:%d\t cellThresholds[maxPin]: %d\n",currentMax,maxPin,cellThresholds[maxPin]);
-    Serial.print(buffer);
-    colorSequence.push(maxPin+1);
-    start = true;
-    counter = 0;
-    
-  }
-  //otherwise we need to increase our timer (counter)
-  else (currentMax < cellThresholds[maxPin]) 
-  {
-    counter++;
-  }
-
+   maxPin = 0;
+   
+   //determine what pin is the highest
+   for (int i = 0; i < 4; i++) 
+   {
+   if (photocellVals[i] > currentMax) 
+   {
+   currentMax = photcellVals[i];
+   maxPin = i;
+   } 
+   }
+   
+   //if we're greater than some threshold
+   if (currentMax > cellThresholds[maxPin]) 
+   {
+   colorSequence.push(maxPin+1);
+   start = true;
+   counter = 0;
+   }
+   //otherwise we need to increase our timer (counter)
+   else (currentMax < cellThresholds[maxPin]) 
+   {
+   counter++;
+   }
+   */
   if ((counter > TIMEOUT) && (start == true)) 
   { 
     Play(colorSequence);
@@ -202,12 +212,13 @@ void startGame()
     Average<int> ave(100);
     for(int j = 0; j<100;j++)
     {
-      
+
       ave.push(analogRead(pinHolding[i]));
     }
     cellThresholds[i] = ave.mode();
   }
-  
-      actuateServo(0);
+
+  actuateServo(0);
 }
+
 
