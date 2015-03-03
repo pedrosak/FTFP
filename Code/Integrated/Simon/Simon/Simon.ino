@@ -98,6 +98,7 @@ void loop() {
   //Serial.print("averageThreshold: ");
   //Serial.println(averageThreshold);
 
+<<<<<<< HEAD
 
 
   if ((currentAverage-averageThreshold>LIT_THRESHOLD) && !lit)
@@ -106,6 +107,24 @@ void loop() {
 
 
     for (int i = 0; i < 4; i++)
+=======
+  for (int i = 0; i < 4; i++) 
+  { 
+    //Serial.println(analogRead(pinHolding[i]));
+    int reading = analogRead(pinHolding[i]);
+    if(reading-cellThresholds[i]>100 /*some value*/)
+    {
+      colorSequence.push(i+1);
+      //Serial.print("Sequence:");
+      //Serial.println(colorSequence.count());
+      while(abs(reading-analogRead(pinHolding[i]))<5)
+      {
+      }
+      start = true;
+      counter = 0;
+    }
+    else
+>>>>>>> origin/master
     {
       //Serial.println(analogRead(pinHolding[i]));
       //int reading = analogRead(pinHolding[i]);
@@ -137,6 +156,7 @@ void loop() {
 
 
 
+<<<<<<< HEAD
   /*
   currentMax = 0;
    maxPin = 0;
@@ -166,6 +186,10 @@ void loop() {
    */
   if ((counter > TIMEOUT) && start)
   {
+=======
+  if ((counter > TIMEOUT) && (start == true)) 
+  { 
+>>>>>>> origin/master
     Serial.println("Play!");
     Play(&colorSequence);
     counter = 0;
