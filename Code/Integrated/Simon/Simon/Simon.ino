@@ -43,22 +43,11 @@ char buffer[256];
 
 int counter = 0;
 
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-
-// Stepper motors
-Adafruit_StepperMotor *rotation = AFMS.getStepper(200, 1); // motor port #1 (M1 & M2)
-Adafruit_StepperMotor *z = AFMS.getStepper(200, 2); // motor port #2 (M3 & M4)
-
 void setup()
 {
   // We'll send debugging information via the Serial monitor
   Serial.begin(9600);
 
-  AFMS.begin();
-
-  // Stepper Motors
-  rotation->setSpeed(200);  // 200 rpm
-  z->setSpeed(200);
 
   //Attach servos to pins (need to figure out what pins. 10 is just an example)
   servoCenter.attach(10);
@@ -91,40 +80,40 @@ void loop() {
    */
 
   //realistically, we can do all the logic here. If the reading - calibration is greater than some number, we know its high.
-    int currentAverage = getAverage();
-    //Serial.print("Current average:");
+  int currentAverage = getAverage();
+  //Serial.print("Current average:");
   //Serial.print(currentAverage);
-    //Serial.print("\t");
+  //Serial.print("\t");
   //Serial.print("averageThreshold: ");
   //Serial.println(averageThreshold);
 
 
 
 
-  if ((currentAverage-averageThreshold>LIT_THRESHOLD) && !lit)
+  if ((currentAverage - averageThreshold > LIT_THRESHOLD) && !lit)
   {
     lit = true;
 
 
 
-  for (int i = 0; i < 4; i++) 
-  { 
-    //Serial.println(analogRead(pinHolding[i]));
-    int reading = analogRead(pinHolding[i]);
-    if(reading-cellThresholds[i]>LIT_THRESHOLD /*some value*/)
+    for (int i = 0; i < 4; i++)
     {
-      colorSequence.push(i+1);
-      //Serial.print("Sequence:");
-      //Serial.println(colorSequence.count());
+      //Serial.println(analogRead(pinHolding[i]));
+      int reading = analogRead(pinHolding[i]);
+      if (reading - cellThresholds[i] > LIT_THRESHOLD /*some value*/)
+      {
+        colorSequence.push(i + 1);
+        //Serial.print("Sequence:");
+        //Serial.println(colorSequence.count());
 
-      start = true;
-      counter = 0;
+        start = true;
+        counter = 0;
+      }
+
+
     }
-
-
   }
-  }
-  else if ((currentAverage - averageThreshold > LIT_THRESHOLD) &&lit)
+  else if ((currentAverage - averageThreshold > LIT_THRESHOLD) && lit)
   {
     counter++;
     //Serial.println("Same color still lit");
