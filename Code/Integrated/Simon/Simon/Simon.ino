@@ -97,7 +97,9 @@ void loop() {
       colorSequence.push(i+1);
       //Serial.print("Sequence:");
       //Serial.println(colorSequence.count());
-     
+      while(abs(reading-analogRead(pinHolding[i]))<5)
+      {
+      }
       start = true;
       counter = 0;
     }
@@ -108,33 +110,6 @@ void loop() {
     }
   } 
 
-  /*
-  currentMax = 0;
-   maxPin = 0;
-   
-   //determine what pin is the highest
-   for (int i = 0; i < 4; i++) 
-   {
-   if (photocellVals[i] > currentMax) 
-   {
-   currentMax = photcellVals[i];
-   maxPin = i;
-   } 
-   }
-   
-   //if we're greater than some threshold
-   if (currentMax > cellThresholds[maxPin]) 
-   {
-   colorSequence.push(maxPin+1);
-   start = true;
-   counter = 0;
-   }
-   //otherwise we need to increase our timer (counter)
-   else (currentMax < cellThresholds[maxPin]) 
-   {
-   counter++;
-   }
-   */
   if ((counter > TIMEOUT) && (start == true)) 
   { 
     Serial.println("Play!");
