@@ -19,7 +19,7 @@ int pinHolding[] = {
 int cellThresholds[4];
 
 QueueArray <int> colorSequence;
-void Play(QueueArray <int> colorSequence);
+void Play(QueueArray <int> *colorSequence);
 
 int photocellVals[4]; //state of each of the photocells
 int currentMax;
@@ -90,16 +90,21 @@ void loop() {
 
   for (int i = 0; i < 4; i++) 
   { 
-    //photocellVals[i] = analogRead(pinHolding[i]);
-    if(analogRead(pinHolding[i])-cellThresholds[i]>50 /*some value*/)
+    //Serial.println(analogRead(pinHolding[i]));
+    int reading = analogRead(pinHolding[i]);
+    if(reading-cellThresholds[i]>100 /*some value*/)
     {
       colorSequence.push(i+1);
+      //Serial.print("Sequence:");
+      //Serial.println(colorSequence.count());
+     
       start = true;
       counter = 0;
     }
     else
     {
       counter++;
+      //Serial.println(counter);
     }
   } 
 
@@ -132,21 +137,22 @@ void loop() {
    */
   if ((counter > TIMEOUT) && (start == true)) 
   { 
-    Play(colorSequence);
+    Serial.println("Play!");
+    Play(&colorSequence);
     counter = 0;
     start = false;
   }
 }
 
 // Determine next stop
-void Play(QueueArray <int> colorSequence) 
+void Play(QueueArray <int> *colorSequence) 
 {
 
   Serial.print("Color sequence length:");
-  Serial.println(colorSequence.count());
-  while(!colorSequence.isEmpty())
+  Serial.println(colorSequence->count());
+  while(!colorSequence->isEmpty())
   {
-    actuateServo(colorSequence.pop());
+    actuateServo(colorSequence->pop());
   }
 
 }
@@ -163,7 +169,8 @@ void actuateServo(int servoNum)
    yellow - 3
    green - 4
    */
-
+Serial.print("Servo num:");
+Serial.println(servoNum);
   switch(servoNum)
   {
 
