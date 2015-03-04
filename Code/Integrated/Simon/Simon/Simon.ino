@@ -42,6 +42,7 @@ Servo servoGreen;
 char buffer[256];
 
 int counter = 0;
+int oldCounter = 0;
 
 void setup()
 {
@@ -81,6 +82,7 @@ void loop() {
 
   //realistically, we can do all the logic here. If the reading - calibration is greater than some number, we know its high.
   int currentAverage = getAverage();
+
   //Serial.print("Current average:");
   //Serial.print(currentAverage);
   //Serial.print("\t");
@@ -89,11 +91,11 @@ void loop() {
 
 
 
-//WHAT IS THE AVERAGE VALUE OF currentAverage?
-  if ((currentAverage - averageThreshold > LIT_THRESHOLD) && !lit)
-  {
+  //WHAT IS THE AVERAGE VALUE OF currentAverage?
+  //if ((currentAverage - averageThreshold > 50))
+  //{
     //ONCE INSIDE THIS IF STATEMENT, A LIGHT HAS BEEN IDENTIFIED AND THAT IS WHY YOU SET THE lit FLAG TO TRUE?
-    lit = true;
+    //lit = true;
 
 
     //ARE YOU IDENTIFIYING THE LIGHT THAT IS ONE WITH THIS FOR LOOP?
@@ -108,68 +110,36 @@ void loop() {
         //Serial.println(colorSequence.count());
 
         start = true;
-        counter = 0;
+
+        while (reading - cellThresholds[i] > LIT_THRESHOLD )
+        {
+          reading = analogRead(pinHolding[i]);
+          //Serial.println("Blocking");
+        }
+        //lit = false;
+
       }
 
 
     }
-  }
-  else if ((currentAverage - averageThreshold > LIT_THRESHOLD) && lit)
+  //}
+
+
+  if ((colorSequence.count() == (oldCounter+1)) && start)
   {
-    //WHY DO YOU NEED THIS counter?
-    //I THINK I UNDERSTAND WHY THIS IS NEEDED BUT IS THIS REALLY THE BEST/ONLY WAY TO DO THIS?
-    //I SAY THIS PARTIALLY BECAUSE I DONT UNDERSTAND THE LOGIC HERE ALSO I HAVEN'T YET COME UP WITH A BETTER SOLUTION MY SELF. <3
-    counter++;
-    //Serial.println("Same color still lit");
-    //Serial.print("Counter");
-    //Serial.println(counter);
-  }
-  else
-  {
-    lit = false;
-  }
-
-
-
-
-  /*
-  currentMax = 0;
-   maxPin = 0;
-
-   //determine what pin is the highest
-   for (int i = 0; i < 4; i++)
-   {
-   if (photocellVals[i] > currentMax)
-   {
-   currentMax = photcellVals[i];
-   maxPin = i;
-   }
-   }
-
-   //if we're greater than some threshold
-   if (currentMax > cellThresholds[maxPin])
-   {
-   colorSequence.push(maxPin+1);
-   start = true;
-   counter = 0;
-   }
-   //otherwise we need to increase our timer (counter)
-   else (currentMax < cellThresholds[maxPin])
-   {
-   counter++;
-   }
-   */
-
-   //SO YEAH, I KINDA GET WHAT YOU ARE TRYING TO DO HERE BUT LIKE I SAID ABOVE, IS THIS THE BEST WAY? CAN WE IMPROVE IT? LETS WORK TOGETHER
-   //FIGURE IT OUT.
-  if ((counter > TIMEOUT) && start)
-  {
+    oldCounter = colorSequence.count();
     Serial.println("Play!");
     Play(&colorSequence);
-    counter = 0;
     start = false;
     lit = false;
   }
+
+    /*
+    Serial.print("Counter: ");
+    Serial.print(counter);
+    Serial.print("\tOld Counter: ");
+    Serial.println(oldCounter);
+    */
 }
 
 // Determine next stop
