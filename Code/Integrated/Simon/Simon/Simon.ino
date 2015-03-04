@@ -89,13 +89,14 @@ void loop() {
 
 
 
-
+//WHAT IS THE AVERAGE VALUE OF currentAverage?
   if ((currentAverage - averageThreshold > LIT_THRESHOLD) && !lit)
   {
+    //ONCE INSIDE THIS IF STATEMENT, A LIGHT HAS BEEN IDENTIFIED AND THAT IS WHY YOU SET THE lit FLAG TO TRUE?
     lit = true;
 
 
-
+    //ARE YOU IDENTIFIYING THE LIGHT THAT IS ONE WITH THIS FOR LOOP?
     for (int i = 0; i < 4; i++)
     {
       //Serial.println(analogRead(pinHolding[i]));
@@ -115,6 +116,9 @@ void loop() {
   }
   else if ((currentAverage - averageThreshold > LIT_THRESHOLD) && lit)
   {
+    //WHY DO YOU NEED THIS counter?
+    //I THINK I UNDERSTAND WHY THIS IS NEEDED BUT IS THIS REALLY THE BEST/ONLY WAY TO DO THIS?
+    //I SAY THIS PARTIALLY BECAUSE I DONT UNDERSTAND THE LOGIC HERE ALSO I HAVEN'T YET COME UP WITH A BETTER SOLUTION MY SELF. <3
     counter++;
     //Serial.println("Same color still lit");
     //Serial.print("Counter");
@@ -155,6 +159,9 @@ void loop() {
    counter++;
    }
    */
+
+   //SO YEAH, I KINDA GET WHAT YOU ARE TRYING TO DO HERE BUT LIKE I SAID ABOVE, IS THIS THE BEST WAY? CAN WE IMPROVE IT? LETS WORK TOGETHER
+   //FIGURE IT OUT.
   if ((counter > TIMEOUT) && start)
   {
     Serial.println("Play!");
@@ -265,4 +272,3 @@ int getAverage()
 
 
 }
-
