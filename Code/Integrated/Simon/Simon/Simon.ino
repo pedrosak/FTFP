@@ -6,6 +6,10 @@
 #include <Average.h>
 #include <Servo.h>
 
+//I love you lack of comments.
+//Code looks good. I think it will work till Simon breaks.
+//Ill order Adafruit servo motor so we can start doing the servos. I think we will run into
+//a problem with servo positioning.
 
 int photocellPin = 0; // the cell and 10K pulldown are connected to a0
 int photocellPin1 = 1;
