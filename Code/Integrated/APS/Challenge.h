@@ -2,11 +2,15 @@
 #define Challenge_h
 #endif // ObjectDetect_h
 #include "Support.h"
+#include <QueueArray.h>
+#include <Servo.h>
+#include <Average.h>
+#include <Adafruit_MotorShield.h>
 
 class Challenge
 {
 public:
-   Challenge();
+   Challenge(char EtchPort);
    bool Rubiks();
    bool Etch();
    bool Simon();
@@ -14,4 +18,38 @@ public:
 private:
    Support _support;
    //any shield relating to the arm needs to be in here
+   
+   //Methods for Simon
+   void Play(QueueArray <int> *colorSequence);
+   void actuateServo(int servoNum);
+   void startSimon(int pinHolding[], int length);
+   
+   //variables for Simon
+   int cellThresholds[4];
+
+   QueueArray <int> colorSequence;
+
+   int photocellVals[4]; //state of each of the photocells
+   int LIT_THRESHOLD;
+   int averageThreshold;
+   
+   int photocellPin; // the cell and 10K pulldown are connected to a0
+   int photocellPin1;
+   int photocellPin2;
+   int photocellPin3;
+   
+   Servo servoCenter;
+   Servo servoRed;
+   Servo servoBlue;
+   Servo servoYellow;
+   Servo servoGreen;
+    
+   int PRESS_ANGLE;
+   int REST_ANGLE;
+  
+   //Etch a Sketch
+   Adafruit_MotorShield _EtchStepper;
+   Adafruit_StepperMotor *left;
+   Adafruit_StepperMotor *right;
+   
 };

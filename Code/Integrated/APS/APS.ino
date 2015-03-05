@@ -1,7 +1,11 @@
+#include <Adafruit_MotorShield.h>
 #include "ObjectDetect.h"
 #include <NewPing.h>
 #include <AccelStepper.h>
 #include <Wire.h>
+#include <QueueArray.h>
+#include <Average.h>
+#include <Servo.h>
 #define MAX_DISTANCE 200
 #define rubixStrafeFromCenter 3.25
 
@@ -25,8 +29,8 @@ bool started = false;
 
 NewPing sonar(trg,echo,MAX_DISTANCE);
 ObjectDetect ObjDet(22,23);
-Challenge Cha;
-Support support;
+Challenge Cha(0x60);
+Support support; //this port is hard coded to 61 in code
 void setup(){
 
   Serial.begin(9600);
