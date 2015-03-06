@@ -19,12 +19,13 @@ private:
    Support _support;
    //any shield relating to the arm needs to be in here
    
-   //Methods for Simon
+   //begin methods for Simon
    void Play(QueueArray <int> *colorSequence);
    void actuateServo(int servoNum);
    void startSimon(int pinHolding[], int length);
+   //end methods for Simon
    
-   //variables for Simon
+   //begin variables for Simon
    int cellThresholds[4];
 
    QueueArray <int> colorSequence;
@@ -46,10 +47,14 @@ private:
     
    int PRESS_ANGLE;
    int REST_ANGLE;
+  //end variables for Simon
   
    //Etch a Sketch
-   Adafruit_MotorShield _EtchStepper;
+   Adafruit_MotorShield _Etch;
+   Adafruit_MotorShield _Rubiks;
    Adafruit_StepperMotor *left;
    Adafruit_StepperMotor *right;
+   Adafruit_StepperMotor *rubiks;
+   
    
 };

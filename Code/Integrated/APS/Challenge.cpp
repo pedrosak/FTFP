@@ -27,46 +27,47 @@ Challenge::Challenge(char EtchPort)
   servoGreen.write(REST_ANGLE);
 
   //initialization of Etch
-  _EtchStepper = Adafruit_MotorShield(EtchPort);
-  left = _EtchStepper.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
-  right = _EtchStepper.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
+  _Etch = Adafruit_MotorShield(EtchPort);
+  _Rubiks = Adafruit_MotorShield(0x60);
+  left = _Etch.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
+  right = _Etch.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
+  rubiks = _Rubiks.getStepper(200,2); // motor port #2 (M3 & M4) stepper that controls Rubiks
 
 
 }
 
-
+/*
+This function will twist the Rubik's cube. The # of steps is half of
+the number of steps in the stepper motor.
+*/
 bool Challenge::Rubiks()
 {
 
-  _support.Arm(200,false); //just place holders. -lower arm to cube
-  //complete the challenge
-  _support.Arm(200,true); //place holders - return arm to native position
-
-  //return true if the system didn't encounter any issues
+  _support.Arm(200,false); //lower arm to cube
+  rubiks->step(100,FORWARD,DOUBLE);
+  _support.Arm(200,true); //return arm to native position
+  return true;
 
 }
 
+/*
+This function will play Etch a sketch.
+*/
 bool Challenge::Etch()
 {
 
   _support.Arm(200,false); //lower the arm to etch
 
   left->step(132, FORWARD, DOUBLE); // 2 full rotations
-  //delay(1000);
   //midpoint left
   left->step(24, BACKWARD, DOUBLE); //go back a little for last E
 
     //E going down
   right->step(14, BACKWARD, DOUBLE);
-  //delay(1000);
   left->step(24, FORWARD, DOUBLE);
-  //delay(1000);
   left->step(24, BACKWARD, DOUBLE);
-  //delay(1000);
   right->step(14, BACKWARD, DOUBLE);
-  //delay(1000);
   left->step(24, FORWARD, DOUBLE);
-  //delay(1000);
   left->step(24, BACKWARD, DOUBLE);
 
   //space for letter and next E
@@ -75,13 +76,9 @@ bool Challenge::Etch()
   //going up second  E
 
     right->step(14, FORWARD, DOUBLE);
-  //delay(1000);
   left->step(24, FORWARD, DOUBLE);
-  //delay(1000);
   left->step(24, BACKWARD, DOUBLE);
-  //delay(1000);
   right->step(15, FORWARD, DOUBLE);
-  //delay(1000);
   //go back down
   right->step(29, BACKWARD, DOUBLE);
 
@@ -92,26 +89,17 @@ bool Challenge::Etch()
   left->step(24, FORWARD, DOUBLE);
   left->step(24, BACKWARD, DOUBLE);
   right->step(15, FORWARD, DOUBLE);
-  //go back down
   right->step(29, BACKWARD, DOUBLE);
-  //delay(1000);
 
   //I
   //space
   left->step(4, BACKWARD, DOUBLE);
-  //delay(1000);
 
   left->step(24, BACKWARD, DOUBLE);
-  //delay(1000);
   //go up on I
   right->step(29, FORWARD, DOUBLE);
-  //delay(1000);
   right->step(29, BACKWARD, DOUBLE);
-  //delay(1000);
-
   left->step(28, BACKWARD, DOUBLE);
-
-
 
   _support.Arm(200,true); //return arm to native position
 
@@ -134,7 +122,7 @@ bool Challenge::Simon()
   boolean start = false;
   int oldCounter = 0;
 
-  _support.Arm(200,false);
+  _support.Arm(200,false); //lower arm to Simon
   startSimon(pinHolding,4);
 
   while(1) //this needs to be some sort of timer.
@@ -161,7 +149,7 @@ bool Challenge::Simon()
     }
   }
 
-  _support.Arm(200,true);
+  _support.Arm(200,true); //return arm to native position
   return true;
 
 }
