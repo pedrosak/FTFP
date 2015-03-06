@@ -28,7 +28,7 @@ Challenge::Challenge(char EtchPort)
 
   //initialization of Etch
   _Etch = Adafruit_MotorShield(EtchPort);
-  _Rubiks = Adafruit_MotorShield(0x60);
+  _Rubiks = Adafruit_MotorShield(0x61);
   left = _Etch.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
   right = _Etch.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
   rubiks = _Rubiks.getStepper(200,2); // motor port #2 (M3 & M4) stepper that controls Rubiks
