@@ -30,6 +30,11 @@ const int LIT_THRESHOLD = 100;
 
 boolean gameStarted = false;
 boolean start = false;
+
+//PWM Frequency is set to example setting. Analog servo run at 60 Hz.
+//I need to find out the frequency for our current micro servos.
+#define PWMFreq  60
+
 // const int PRESS_ANGLE = 50; //angle at which servo will actuate to press button
 // const int REST_ANGLE = 100; //angle at which servo will rest
 // Servo servoCenter;
