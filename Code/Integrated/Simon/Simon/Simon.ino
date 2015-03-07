@@ -25,7 +25,6 @@ QueueArray <int> colorSequence;
 void Play(QueueArray <int> *colorSequence);
 
 int photocellVals[4]; //state of each of the photocells
-int averageThreshold = 0;
 const int LIT_THRESHOLD = 100;
 
 boolean gameStarted = false;
@@ -33,38 +32,17 @@ boolean start = false;
 
 //PWM Frequency is set to example setting. Analog servo run at 60 Hz.
 //I need to find out the frequency for our current micro servos.
-#define PWMFreq  60
+const int PWMFreq = 60;
 
 // const int PRESS_ANGLE = 50; //angle at which servo will actuate to press button
 // const int REST_ANGLE = 100; //angle at which servo will rest
-// Servo servoCenter;
-// Servo servoRed;
-// Servo servoBlue;
-// Servo servoYellow;
-// Servo servoGreen;
-
 int oldCounter = 0;
 
 void setup()
 {
   // We'll send debugging information via the Serial monitor
   Serial.begin(9600);
-
-
-  //Attach servos to pins (need to figure out what pins. 10 is just an example)
-  // servoCenter.attach(10);
-  // servoRed.attach(10);
-  // servoBlue.attach(10);
-  // servoYellow.attach(10);
-  // servoGreen.attach(10);
-  // servoCenter.write(REST_ANGLE);
-  // servoRed.write(REST_ANGLE);
-  // servoBlue.write(REST_ANGLE);
-  // servoYellow.write(REST_ANGLE);
-  // servoGreen.write(REST_ANGLE);
-
   servoShield.begin();
-  
   servoShield.setPWMFreq(PWMFreq);
 
 }
@@ -102,7 +80,6 @@ void loop() {
   if ((colorSequence.count() == (oldCounter+1)) && start)
   {
     oldCounter = colorSequence.count();
-    //Serial.println("Play!");
     Play(&colorSequence);
     start = false;
   }
@@ -171,8 +148,6 @@ void startGame()
       ave.push(analogRead(pinHolding[i]));
     }
     cellThresholds[i] = ave.mode();
-    averageThreshold += cellThresholds[i];
   }
-  averageThreshold = averageThreshold / 4;
   actuateServo(0);
 }

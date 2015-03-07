@@ -32,7 +32,6 @@ private:
 
    int photocellVals[4]; //state of each of the photocells
    int LIT_THRESHOLD;
-   int averageThreshold;
    
    int photocellPin; // the cell and 10K pulldown are connected to a0
    int photocellPin1;

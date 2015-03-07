@@ -9,7 +9,6 @@ Challenge::Challenge(char EtchPort)
   photocellPin2 = 2;
   photocellPin3 = 3;
 
-  averageThreshold = 0;
   LIT_THRESHOLD = 100;
 
   PRESS_ANGLE = 50; //angle at which servo will actuate to press button
@@ -238,9 +237,7 @@ void Challenge::startSimon(int pinHolding[], int length)
       ave.push(analogRead(pinHolding[i]));
     }
     cellThresholds[i] = ave.mode();
-    averageThreshold += cellThresholds[i];
   }
-  averageThreshold = averageThreshold / 4;
   actuateServo(0);
 }
 
