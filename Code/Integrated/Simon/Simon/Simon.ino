@@ -1,4 +1,4 @@
-#include <Adafruit_MotorShield.h>
+#include <Adafruit_PWMServoDriver.h>
 #include <Servo.h>
 #include <Stepper.h>
 #include <Wire.h>
@@ -6,10 +6,9 @@
 #include <Average.h>
 #include <Servo.h>
 
-//I love you lack of comments.
-//Code looks good. I think it will work till Simon breaks.
-//Ill order Adafruit servo motor so we can start doing the servos. I think we will run into
-//a problem with servo positioning.
+//We might have to address this shield. If so, find out which address
+//was given to this shield and input it inside the (). e.x: Adafruit_PWMServoDriver(ADDRESS)
+Adafruit_PWMServoDriver servoShield = Adafruit_PWMServoDriver();
 
 int photocellPin = 0; // the cell and 10K pulldown are connected to a0
 int photocellPin1 = 1;
@@ -31,13 +30,13 @@ const int LIT_THRESHOLD = 100;
 
 boolean gameStarted = false;
 boolean start = false;
-const int PRESS_ANGLE = 50; //angle at which servo will actuate to press button
-const int REST_ANGLE = 100; //angle at which servo will rest
-Servo servoCenter;
-Servo servoRed;
-Servo servoBlue;
-Servo servoYellow;
-Servo servoGreen;
+// const int PRESS_ANGLE = 50; //angle at which servo will actuate to press button
+// const int REST_ANGLE = 100; //angle at which servo will rest
+// Servo servoCenter;
+// Servo servoRed;
+// Servo servoBlue;
+// Servo servoYellow;
+// Servo servoGreen;
 
 int oldCounter = 0;
 
@@ -48,16 +47,20 @@ void setup()
 
 
   //Attach servos to pins (need to figure out what pins. 10 is just an example)
-  servoCenter.attach(10);
-  servoRed.attach(10);
-  servoBlue.attach(10);
-  servoYellow.attach(10);
-  servoGreen.attach(10);
-  servoCenter.write(REST_ANGLE);
-  servoRed.write(REST_ANGLE);
-  servoBlue.write(REST_ANGLE);
-  servoYellow.write(REST_ANGLE);
-  servoGreen.write(REST_ANGLE);
+  // servoCenter.attach(10);
+  // servoRed.attach(10);
+  // servoBlue.attach(10);
+  // servoYellow.attach(10);
+  // servoGreen.attach(10);
+  // servoCenter.write(REST_ANGLE);
+  // servoRed.write(REST_ANGLE);
+  // servoBlue.write(REST_ANGLE);
+  // servoYellow.write(REST_ANGLE);
+  // servoGreen.write(REST_ANGLE);
+
+  servoShield.begin();
+  
+  servoShield.setPWMFreq(PWMFreq);
 
 }
 
