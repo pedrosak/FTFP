@@ -124,8 +124,9 @@ bool Challenge::Simon()
 
   _support.Arm(200,false); //lower arm to Simon
   startSimon(pinHolding,4);
+  unsigned long time = millis();
 
-  while(1) //this needs to be some sort of timer.
+  while((time-millis())>=15*1000) //this needs to be some sort of timer.
   {
     for (int i = 0; i < 4; i++)
     {
