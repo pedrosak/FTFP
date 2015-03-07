@@ -115,9 +115,12 @@ void Play(QueueArray <int> *colorSequence)
 
 void actuateServo(int servoNum)
 {
+   /*
+   I need to find out the max and min of the servos.
+   For now I am setting them to the example settings.
+   IF YOU ARE READING THIS, DO NOT RUN THIS CODE OR YOU MIGHT BREAK THE SERVOS.
 
-  /*
-  use this function to actuate the servo.
+   use this function to actuate the servo.
    servo numbering scheme:
    center - 0
    red - 1
@@ -125,45 +128,26 @@ void actuateServo(int servoNum)
    yellow - 3
    green - 4
    */
+
+  //center - 0 and 1, red - 2 and 3, blue - 4 and 5, yellow - 6 and 7, green - 8 and 9
+  int maxMinValues[] = {150,600,150,600,150,600,150,600,150,600};
+  int SERVOMIN = maxMinValues[servoNum*2];
+  int SERVOMAX = maxMinValues[(servoNum*2) + 1];
+
   Serial.print("Servo num:");
   Serial.println(servoNum);
-  switch (servoNum)
+
+  //Push pushrod downwards.
+  for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) 
   {
-
-  case 0:
-    {
-      servoCenter.write(PRESS_ANGLE);
-      servoCenter.write(REST_ANGLE);
-      break;
-    }
-  case 1:
-    {
-      servoRed.write(PRESS_ANGLE);
-      servoRed.write(REST_ANGLE);
-      break;
-    }
-  case 2:
-    {
-      servoBlue.write(PRESS_ANGLE);
-      servoBlue.write(REST_ANGLE);
-      break;
-    }
-  case 3:
-    {
-      servoYellow.write(PRESS_ANGLE);
-      servoYellow.write(REST_ANGLE);
-      break;
-    }
-  case 4:
-    {
-      servoGreen.write(PRESS_ANGLE);
-      servoGreen.write(REST_ANGLE);
-      break;
-    }
-
+    servoShield.setPWM(servoNum, 0, pulselen);
   }
 
-
+  //Bring push rod back up to starting posistion.
+  for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--) 
+  {
+    servoShield.setPWM(servoNum, 0, pulselen);
+  }
 }
 
 void startGame()
@@ -184,5 +168,3 @@ void startGame()
   averageThreshold = averageThreshold / 4;
   actuateServo(0);
 }
-
-
