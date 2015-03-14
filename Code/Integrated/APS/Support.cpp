@@ -5,8 +5,9 @@
 Support::Support()
 { 
   //Might not have to do anything here. We'll see. For right now, we don't. 
-  _ArmStepper = Adafruit_MotorShield(0x61);
-  arm = _ArmStepper.getStepper(200, 1); // motor port #1 (M1 & M2), stepper that controls arm up and down
+  //_ArmStepper = Adafruit_MotorShield(0x61);
+  //arm = _ArmStepper.getStepper(200, 2); // motor port #2 (M3 & M4), stepper that controls arm up and down
+  //_ArmStepper.begin();
 }
 
 //function to move arm. Takes in number of steps and a boolean for up or down.
@@ -16,13 +17,13 @@ bool Support::Arm(int steps, bool up)
   
   if(up)
   {
-  arm->step(steps,FORWARD,DOUBLE);
+  //arm->step(steps,FORWARD,DOUBLE);
   }
   else
   {
-  arm->step(steps,BACKWARD,DOUBLE);
+  //arm->step(steps,BACKWARD,DOUBLE);
   }
-  
+ return true; 
 }
 
 //function to initialize/do line following

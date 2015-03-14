@@ -10,9 +10,9 @@
 class Challenge
 {
 public:
-   Challenge(char EtchPort);
-   bool Rubiks();
-   bool Etch();
+   Challenge();
+   bool Rubiks(   Adafruit_StepperMotor *rubiks);
+   bool Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right);
    bool Simon();
    bool Card();
 private:
@@ -48,12 +48,13 @@ private:
    int REST_ANGLE;
   //end variables for Simon
   
+  /*
    //Etch a Sketch
    Adafruit_MotorShield _Etch;
    Adafruit_MotorShield _Rubiks;
    Adafruit_StepperMotor *left;
    Adafruit_StepperMotor *right;
    Adafruit_StepperMotor *rubiks;
-   
+   */
    
 };
