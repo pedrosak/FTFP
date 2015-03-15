@@ -132,7 +132,7 @@ bool Challenge::Simon()
   unsigned long time = millis();
   Serial.println("Starting Simon");
 //  Serial.println(time);
-  while((time-millis())>=(unsigned long)(15*1000)) //this needs to be some sort of timer.
+  while((millis()-time)>=(unsigned long)(15*1000)) //this needs to be some sort of timer.
   {
     for (int i = 0; i < 4; i++)
     {
