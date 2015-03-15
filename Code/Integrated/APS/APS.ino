@@ -27,19 +27,24 @@ int trg=22;
 bool started = false;
 
 NewPing sonar(trg,echo,MAX_DISTANCE);
-ObjectDetect ObjDet(22,23);
-Challenge Cha;
-Support support; //this port is hard coded to 61 in code
 
 
- Adafruit_StepperMotor *left;
-   Adafruit_StepperMotor *right;
-     Adafruit_StepperMotor *rubiks;
-       
+
+Adafruit_MotorShield _Etch = Adafruit_MotorShield(0x60);
+Adafruit_MotorShield _Rubiks = Adafruit_MotorShield(0x61);
 
 
-     Adafruit_MotorShield _Etch = Adafruit_MotorShield(0x60);
-   Adafruit_MotorShield _Rubiks = Adafruit_MotorShield(0x61);
+Adafruit_StepperMotor *left = _Etch.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
+Adafruit_StepperMotor *right = _Etch.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
+Adafruit_StepperMotor *rubiks =_Rubiks.getStepper(200,1); // motor port #1 (M1 & M2) stepper that controls Rubiks
+Adafruit_StepperMotor *arm = _Rubiks.getStepper(200,2); // motor port #1 (M1 & M2) stepper that controls Rubiks    
+
+
+
+
+Support support(arm); //this port is hard coded to 61 in code
+Challenge Cha(&support);
+ObjectDetect ObjDet(22,23,&support);
 
 void setup(){
 
@@ -51,9 +56,7 @@ _Etch.begin();
 _Rubiks.begin();
 
   
-  left = _Etch.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
- right = _Etch.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
- rubiks = _Rubiks.getStepper(200,1); // motor port #1 (M1 & M2) stepper that controls Rubiks
+  
 
 }
 

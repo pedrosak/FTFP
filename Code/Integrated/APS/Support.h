@@ -9,7 +9,7 @@
 class Support
 {
 public:
-   Support();
+   Support(Adafruit_StepperMotor *pointerToArm);
    bool Arm(int steps, bool up);
    void Follow();
    bool StartUp();

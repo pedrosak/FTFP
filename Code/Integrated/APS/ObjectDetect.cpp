@@ -4,7 +4,7 @@
 
 
 
-ObjectDetect::ObjectDetect(int trigPin, int echoPin)
+ObjectDetect::ObjectDetect(int trigPin, int echoPin, Support *support)
 {
   _trigPin=trigPin;
   _echoPin=echoPin;
@@ -16,6 +16,7 @@ ObjectDetect::ObjectDetect(int trigPin, int echoPin)
   pinMode(_pinI2,OUTPUT);
   pinMode(_speedpinA,OUTPUT);
   LED = 23;
+  _support = support;
 
 }
 
@@ -26,7 +27,7 @@ bool ObjectDetect::Approach(NewPing sonar)
   while(((float)(uS / US_ROUNDTRIP_CM) >= 4.1 && (float)(uS / US_ROUNDTRIP_CM) <= 4.3))
   {
     delay(50);
-    _support.Creep();
+    _support->Creep();
   }
 
   return true;
@@ -44,7 +45,7 @@ int ObjectDetect::IdentifyAndAlign()
       {
         digitalWrite(LED, HIGH);
         float dist = Serial.parseFloat();
-        _support.Shuffle(dist);
+        _support->Shuffle(dist);
         Serial.write('M');
         digitalWrite(LED, LOW);
       }

@@ -10,13 +10,13 @@
 class Challenge
 {
 public:
-   Challenge();
+   Challenge(Support *support);
    bool Rubiks(   Adafruit_StepperMotor *rubiks);
    bool Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right);
    bool Simon();
    bool Card();
 private:
-   Support _support;
+   Support *_support;
    //any shield relating to the arm needs to be in here
    
    //begin methods for Simon

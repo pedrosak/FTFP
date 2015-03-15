@@ -1,6 +1,6 @@
 #include "Challenge.h"
 
-Challenge::Challenge()
+Challenge::Challenge(Support *support)
 {
 
   //initialization of Simon
@@ -24,6 +24,7 @@ Challenge::Challenge()
   servoBlue.write(REST_ANGLE);
   servoYellow.write(REST_ANGLE);
   servoGreen.write(REST_ANGLE);
+  _support = support;
 
 /*
 
@@ -44,12 +45,12 @@ Challenge::Challenge()
 This function will twist the Rubik's cube. The # of steps is half of
 the number of steps in the stepper motor.
 */
-bool Challenge::Rubiks(   Adafruit_StepperMotor *rubiks)
+bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
 {
 
-  _support.Arm(200,false); //lower arm to cube
+  _support->Arm(200,false); //lower arm to cube
   rubiks->step(100,FORWARD,DOUBLE);
-  _support.Arm(200,true); //return arm to native position
+  _support->Arm(200,true); //return arm to native position
   return true;
 
 }
@@ -59,7 +60,7 @@ This function will play Etch a sketch.
 */
 bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right)
 {
-  _support.Arm(200,false); //lower the arm to etch
+  _support->Arm(200,false); //lower the arm to etch
 Serial.println("I");
   left->step(132, FORWARD, DOUBLE); // 2 full rotations
   //midpoint left
@@ -105,7 +106,7 @@ Serial.println("E");
   right->step(29, BACKWARD, DOUBLE);
   left->step(28, BACKWARD, DOUBLE);
 
-  _support.Arm(200,true); //return arm to native position
+  _support->Arm(200,true); //return arm to native position
 
   return true;
 
@@ -126,7 +127,7 @@ bool Challenge::Simon()
   boolean start = false;
   int oldCounter = 0;
 
-  _support.Arm(200,false); //lower arm to Simon
+  _support->Arm(200,false); //lower arm to Simon
   startSimon(pinHolding,4);
   unsigned long time = millis();
   Serial.println("Starting Simon");
@@ -153,11 +154,11 @@ bool Challenge::Simon()
       Play(&colorSequence);
       start = false;
     }
-    Serial.println("Ending Simon");
+
 //    Serial.println(time-millis());
   }
-
-  _support.Arm(200,true); //return arm to native position
+    Serial.println("Ending Simon");
+  _support->Arm(200,true); //return arm to native position
   return true;
 
 }
@@ -166,11 +167,11 @@ bool Challenge::Card()
 {
 
 
-  _support.Arm(200,false); 
+  _support->Arm(200,false); 
   //really, this is all there is to the challenge.......
 
 
-  _support.Arm(200,true);
+  _support->Arm(200,true);
   //return true if the system didn't encounter any issues.
 }
 
