@@ -26,19 +26,6 @@ Challenge::Challenge(Support *support)
   servoGreen.write(REST_ANGLE);
   _support = support;
 
-/*
-
-  //initialization of Etch
-  _Etch = Adafruit_MotorShield(EtchPort);
-  _Rubiks = Adafruit_MotorShield(0x61);
-  left = _Etch.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
-  right = _Etch.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
-  rubiks = _Rubiks.getStepper(200,1); // motor port #1 (M1 & M2) stepper that controls Rubiks
-  
-  _Etch.begin();
-  _Rubiks.begin();
-
-*/
 }
 
 /*
@@ -61,12 +48,10 @@ This function will play Etch a sketch.
 bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right)
 {
   _support->Arm(200,false); //lower the arm to etch
-Serial.println("I");
   left->step(132, FORWARD, DOUBLE); // 2 full rotations
   //midpoint left
   left->step(24, BACKWARD, DOUBLE); //go back a little for last E
 
-Serial.println("E");
     //E going down
   right->step(14, BACKWARD, DOUBLE);
   left->step(24, FORWARD, DOUBLE);
@@ -79,7 +64,6 @@ Serial.println("E");
   left->step(28, BACKWARD, DOUBLE);
 
   //going up second  E
-Serial.println("E");
     right->step(14, FORWARD, DOUBLE);
   left->step(24, FORWARD, DOUBLE);
   left->step(24, BACKWARD, DOUBLE);
@@ -131,8 +115,7 @@ bool Challenge::Simon()
   startSimon(pinHolding,4);
   unsigned long time = millis();
   Serial.println("Starting Simon");
-//  Serial.println(time);
-  while((millis()-time)>=(unsigned long)(15*1000)) //this needs to be some sort of timer.
+  while((millis()-time)<=(unsigned long)(15*1000)) //this needs to be some sort of timer.
   {
     for (int i = 0; i < 4; i++)
     {
@@ -154,8 +137,6 @@ bool Challenge::Simon()
       Play(&colorSequence);
       start = false;
     }
-
-//    Serial.println(time-millis());
   }
     Serial.println("Ending Simon");
   _support->Arm(200,true); //return arm to native position

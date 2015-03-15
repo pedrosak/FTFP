@@ -19,8 +19,6 @@ public:
 private:
   //we'll want any information relating to pins to be private. The idea is that once its set, we won't touch it
   //we'll create the objects relating to the motor shields here.
-  //_ArmStepper;
-  Adafruit_MotorShield _ArmStepper;
   Adafruit_StepperMotor *arm;
   
   

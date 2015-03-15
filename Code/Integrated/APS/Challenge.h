@@ -47,14 +47,5 @@ private:
    int PRESS_ANGLE;
    int REST_ANGLE;
   //end variables for Simon
-  
-  /*
-   //Etch a Sketch
-   Adafruit_MotorShield _Etch;
-   Adafruit_MotorShield _Rubiks;
-   Adafruit_StepperMotor *left;
-   Adafruit_StepperMotor *right;
-   Adafruit_StepperMotor *rubiks;
-   */
    
 };
