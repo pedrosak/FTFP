@@ -90,6 +90,8 @@ bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *r
   right->step(29, BACKWARD, DOUBLE);
   left->step(28, BACKWARD, DOUBLE);
 
+  left->release();
+  right->release();
   _support->Arm(200,true); //return arm to native position
 
   return true;

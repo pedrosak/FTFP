@@ -54,7 +54,8 @@ void setup(){
 
 Etch.begin();
 Rubiks.begin();
-
+left ->setSpeed(48);
+right->setSpeed(48);
   
   
 
@@ -84,14 +85,14 @@ void loop()
   {
   switch (obj)
   {
-  case 1:
+  case 2:
     {
       Serial.println("Playing Etch");
       //Serial.write('E');
       Cha.Etch(left,right);
       break;
     }
-  case 2:
+  case 1:
     {
       Serial.println("Playing Rubiks");
       //Serial.write('R');
