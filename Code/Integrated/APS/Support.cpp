@@ -1,7 +1,7 @@
 #include "Support.h"
 
-//the executable parts of the support go here.
 
+//the constructor will take in a pointer to the arm motor
 Support::Support(Adafruit_StepperMotor *pointerToArm)
 { 
   

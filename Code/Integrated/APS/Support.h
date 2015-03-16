@@ -17,9 +17,7 @@ public:
    void Creep();
    void Shuffle(float dist);
 private:
-  //we'll want any information relating to pins to be private. The idea is that once its set, we won't touch it
-  //we'll create the objects relating to the motor shields here.
-  Adafruit_StepperMotor *arm;
+  Adafruit_StepperMotor *arm; //pointer to the arm motor. Will be set in the constructor
   
   
 };

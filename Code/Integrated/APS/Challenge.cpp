@@ -30,20 +30,21 @@ Challenge::Challenge(Support *support)
 
 /*
 This function will twist the Rubik's cube. The # of steps is half of
-the number of steps in the stepper motor.
+the number of steps in the stepper motor. We pass this function a 
+pointer to the stepper motor
 */
 bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
 {
 
   _support->Arm(200,false); //lower arm to cube
-  rubiks->step(100,FORWARD,DOUBLE);
+  rubiks->step(100,FORWARD,DOUBLE); //twist 180
   _support->Arm(200,true); //return arm to native position
   return true;
 
 }
 
 /*
-This function will play Etch a sketch.
+This function will play Etch a sketch. We pass it a pointer to the stepper motors it will be using
 */
 bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right)
 {
@@ -90,7 +91,7 @@ bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *r
   right->step(29, BACKWARD, DOUBLE);
   left->step(28, BACKWARD, DOUBLE);
 
-  left->release();
+  left->release(); //release so we're not still drawing power. We really don't care if they remain in the same location or not.
   right->release();
   _support->Arm(200,true); //return arm to native position
 
@@ -115,28 +116,28 @@ bool Challenge::Simon()
 
   _support->Arm(200,false); //lower arm to Simon
   startSimon(pinHolding,4);
-  unsigned long time = millis();
+  unsigned long time = millis(); //get current time processor has been running
   Serial.println("Starting Simon");
-  while((millis()-time)<=(unsigned long)(15*1000)) //this needs to be some sort of timer.
+  while((millis()-time)<=(unsigned long)(15*1000)) //if current time minus our beginning time stamp is less than 15 seconds
   {
     for (int i = 0; i < 4; i++)
     {
       int reading = analogRead(pinHolding[i]);
-      if (reading - cellThresholds[i] > LIT_THRESHOLD)
+      if (reading - cellThresholds[i] > LIT_THRESHOLD) //if the reading minus its calibration is greater than some brightness
       {
-        colorSequence.push(i + 1);
-        start = true;
-        while (reading - cellThresholds[i] > LIT_THRESHOLD )
+        colorSequence.push(i + 1); //add the correct servo to actuate to the sequence
+        start = true; //signal we've started playing
+        while (reading - cellThresholds[i] > LIT_THRESHOLD ) //while that same color is still high, block
         {
           reading = analogRead(pinHolding[i]);
         }
       }
     }
 
-    if ((colorSequence.count() == (oldCounter+1)) && start)
+    if ((colorSequence.count() == (oldCounter+1)) && start) //if we have one more in our color sequence vs last time we played
     {
-      oldCounter = colorSequence.count();
-      Play(&colorSequence);
+      oldCounter = colorSequence.count(); //change the value
+      Play(&colorSequence); //play
       start = false;
     }
   }

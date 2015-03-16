@@ -16,7 +16,7 @@ public:
    bool Simon();
    bool Card();
 private:
-   Support *_support;
+   Support *_support; //pointer to support object. Will be set in constructor
    //any shield relating to the arm needs to be in here
    
    //begin methods for Simon
@@ -38,7 +38,7 @@ private:
    int photocellPin2;
    int photocellPin3;
    
-   Servo servoCenter;
+   Servo servoCenter; //servos for simon
    Servo servoRed;
    Servo servoBlue;
    Servo servoYellow;

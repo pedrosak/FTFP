@@ -20,9 +20,7 @@ private:
   int _pinI1;
   int _pinI2;
   int LED;
-  void forward();
-  void backward();
-  Support *_support;
+  Support *_support; //pointer to support object. Will be set in constructor
   
 
 };

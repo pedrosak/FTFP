@@ -16,7 +16,7 @@ ObjectDetect::ObjectDetect(int trigPin, int echoPin, Support *support)
   pinMode(_pinI2,OUTPUT);
   pinMode(_speedpinA,OUTPUT);
   LED = 23;
-  _support = support;
+  _support = support; //pointer to the support object. All modules will use same support object
 
 }
 
@@ -36,7 +36,7 @@ bool ObjectDetect::Approach(NewPing sonar)
 
 int ObjectDetect::IdentifyAndAlign()
 {
-  while(true)
+  while(true) //we will escape this only once we have a valid byte read
   {
     while (Serial.available() > 0) //blocking serial call
     {
@@ -80,18 +80,6 @@ void ObjectDetect::WhatObj(int incomingByte)
   }
 }
 
-void ObjectDetect::forward()
-{
-  analogWrite(_speedpinA, _spead);//input a simulation value to set the speed
-  digitalWrite(_pinI2, LOW);//turn DC Motor A move anticlockwise
-  digitalWrite(_pinI1, HIGH);
-}
-void ObjectDetect::backward()//
-{
-  analogWrite(_speedpinA, _spead);//input a simulation value to set the speed
-  digitalWrite(_pinI2, HIGH);//turn DC Motor A move clockwise
-  digitalWrite(_pinI1, LOW);
-}
 
 
 
