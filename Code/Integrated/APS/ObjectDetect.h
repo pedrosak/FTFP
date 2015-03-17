@@ -13,15 +13,6 @@ public:
   void WhatObj(int incomingByte);
   int IdentifyAndAlign();
 private:
-  int _trigPin;
-  int _echoPin;
-  int _spead;
-  int _speedpinA;
-  int _pinI1;
-  int _pinI2;
-  int LED;
   Support *_support; //pointer to support object. Will be set in constructor
-  
-
 };
 

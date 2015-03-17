@@ -20,6 +20,7 @@ NewPing sonar(trg, echo, MAX_DISTANCE);
 
 Adafruit_MotorShield Etch = Adafruit_MotorShield(0x60);
 Adafruit_MotorShield Rubiks = Adafruit_MotorShield(0x61);
+const int etchSteps = 48; //configure based upon steppers used
 
 /*
 READ ME BEFORE PLUGGING THINGS IN!
@@ -42,8 +43,8 @@ Please pay attention to what motor shield is controlling what motors. If possibl
 0x61 be the arm and 0x60 be the etch.
 
 */
-Adafruit_StepperMotor *left = Etch.getStepper(48, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
-Adafruit_StepperMotor *right = Etch.getStepper(48, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
+Adafruit_StepperMotor *left = Etch.getStepper(etchSteps, 1); // motor port #1 (M1 & M2), stepper that controls left knob on Etch-a-Sketch
+Adafruit_StepperMotor *right = Etch.getStepper(etchSteps, 2); // motor port #2 (M3 & M4) stepper that controls right knob on Etch-a-Sketch
 Adafruit_StepperMotor *rubiks = Rubiks.getStepper(200, 1); // motor port #1 (M1 & M2) stepper that controls Rubiks
 Adafruit_StepperMotor *arm = Rubiks.getStepper(200, 2); // motor port #1 (M1 & M2) stepper that controls Rubiks
 
@@ -89,14 +90,14 @@ void loop()
   {
     switch (obj)
     {
-      case 2:
+      case 1:
         {
           Serial.println("Playing Etch");
           //Serial.write('E');
-          Cha.Etch(left, right);
+          Cha.Etch(left, right, etchSteps);
           break;
         }
-      case 1:
+      case 2:
         {
           Serial.println("Playing Rubiks");
           //Serial.write('R');

@@ -13,7 +13,6 @@ Support::Support(Adafruit_StepperMotor *pointerToArm)
 //A true corresponds to an upward movement, false is down
 bool Support::Arm(int steps, bool up)
 {
-  
   if(up)
   {
   arm->step(steps,FORWARD,DOUBLE);
@@ -37,9 +36,8 @@ bool Support::StartUp()
  
  //return true if all is dandy, false otherwise. If false, system won't start. Throw some error. 
   
-  
-  
 }
+
 bool Support::Finish()
 {
   
