@@ -39,6 +39,7 @@ bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
   _support->Arm(200,false); //lower arm to cube
   rubiks->step(100,FORWARD,DOUBLE); //twist 180
   _support->Arm(200,true); //return arm to native position
+  rubiks->release(); //release so that we don't keep using power
   return true;
 
 }
