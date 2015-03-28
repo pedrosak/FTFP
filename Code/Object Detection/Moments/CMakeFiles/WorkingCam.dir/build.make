@@ -38,10 +38,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Capstone/Software/ComputerVision/Moments
+CMAKE_SOURCE_DIR = "/home/pi/ftfp/Code/Object Detection/Moments"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Capstone/Software/ComputerVision/Moments
+CMAKE_BINARY_DIR = "/home/pi/ftfp/Code/Object Detection/Moments"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/WorkingCam.dir/depend.make
@@ -54,17 +54,17 @@ include CMakeFiles/WorkingCam.dir/flags.make
 
 CMakeFiles/WorkingCam.dir/cam_working.cpp.o: CMakeFiles/WorkingCam.dir/flags.make
 CMakeFiles/WorkingCam.dir/cam_working.cpp.o: cam_working.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pi/Capstone/Software/ComputerVision/Moments/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report "/home/pi/ftfp/Code/Object Detection/Moments/CMakeFiles" $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/WorkingCam.dir/cam_working.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/WorkingCam.dir/cam_working.cpp.o -c /home/pi/Capstone/Software/ComputerVision/Moments/cam_working.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/WorkingCam.dir/cam_working.cpp.o -c "/home/pi/ftfp/Code/Object Detection/Moments/cam_working.cpp"
 
 CMakeFiles/WorkingCam.dir/cam_working.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/WorkingCam.dir/cam_working.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/pi/Capstone/Software/ComputerVision/Moments/cam_working.cpp > CMakeFiles/WorkingCam.dir/cam_working.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E "/home/pi/ftfp/Code/Object Detection/Moments/cam_working.cpp" > CMakeFiles/WorkingCam.dir/cam_working.cpp.i
 
 CMakeFiles/WorkingCam.dir/cam_working.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/WorkingCam.dir/cam_working.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/pi/Capstone/Software/ComputerVision/Moments/cam_working.cpp -o CMakeFiles/WorkingCam.dir/cam_working.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S "/home/pi/ftfp/Code/Object Detection/Moments/cam_working.cpp" -o CMakeFiles/WorkingCam.dir/cam_working.cpp.s
 
 CMakeFiles/WorkingCam.dir/cam_working.cpp.o.requires:
 .PHONY : CMakeFiles/WorkingCam.dir/cam_working.cpp.o.requires
@@ -126,6 +126,6 @@ CMakeFiles/WorkingCam.dir/clean:
 .PHONY : CMakeFiles/WorkingCam.dir/clean
 
 CMakeFiles/WorkingCam.dir/depend:
-	cd /home/pi/Capstone/Software/ComputerVision/Moments && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/Capstone/Software/ComputerVision/Moments /home/pi/Capstone/Software/ComputerVision/Moments /home/pi/Capstone/Software/ComputerVision/Moments /home/pi/Capstone/Software/ComputerVision/Moments /home/pi/Capstone/Software/ComputerVision/Moments/CMakeFiles/WorkingCam.dir/DependInfo.cmake --color=$(COLOR)
+	cd "/home/pi/ftfp/Code/Object Detection/Moments" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/home/pi/ftfp/Code/Object Detection/Moments" "/home/pi/ftfp/Code/Object Detection/Moments" "/home/pi/ftfp/Code/Object Detection/Moments" "/home/pi/ftfp/Code/Object Detection/Moments" "/home/pi/ftfp/Code/Object Detection/Moments/CMakeFiles/WorkingCam.dir/DependInfo.cmake" --color=$(COLOR)
 .PHONY : CMakeFiles/WorkingCam.dir/depend
 

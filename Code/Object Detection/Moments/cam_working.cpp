@@ -82,6 +82,7 @@ int main( int, char** argv )
 	{
 	Size s = src.size();
 	midPoint = Point2f(static_cast<float>(s.width / 2.0), static_cast<float>(s.height / 2.0));
+	cout<<s.width<<endl;
 		//-- 3. Apply the classifier to the frame
 		if( src.empty() )
 		{ 
@@ -160,22 +161,23 @@ void thresh_callback(int, void* )
 	//return;
 	//threshHold=200;
 	Mat drawing = Mat::zeros( canny_output.size(), CV_8UC3 );
-	
-	for( size_t i = 0; i< contours.size(); i++ )
-	//for(size_t i = 0; i< needDrawing.size(); i++) 
+	cout<<"Need Drawing: "<<needDrawing.size()<<endl;
+	//for( size_t i = 0; i< contours.size(); i++ )
+	for(size_t i = 0; i< needDrawing.size(); i++) 
 	{
 			//cout<<area[i]<<endl; 
-
-			if((area[i]>1000))
-			{
-			cout<<area[i]<<endl;
+			//cout<<area[needDrawing[i]]<<endl;
+			//if((area[i]>250)&&(area[i]<350))
+			//{
+			//cout<<area[i]<<endl;
+			//cout<<needDrawing[i]<<endl;
 			Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-			//drawContours( drawing, contours, (int)needDrawing[i], color, 2, 8, hierarchy, 0, Point() );
-			//circle( drawing, mc[needDrawing[i]], 4, color, -1, 8, 0);
+			drawContours( drawing, contours, (int)needDrawing[i], color, 2, 8, hierarchy, 0, Point() );
+			circle( drawing, mc[needDrawing[i]], 4, color, -1, 8, 0);
 			//cout<<"X: "<<midPoint.x-mc[needDrawing[i]].x<<endl;
-			drawContours( drawing, contours, (int)i, color, 2, 8, hierarchy, 0, Point() );
-			circle( drawing, mc[i], 4, color, -1, 8, 0 );
-			}
+			//drawContours( drawing, contours, (int)i, color, 2, 8, hierarchy, 0, Point() );
+			//circle( drawing, mc[i], 4, color, -1, 8, 0 );
+			//}
 
 	}
 
@@ -201,21 +203,26 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 	for( size_t i =0; i<area.size(); i++)
 	{
 
-		if(area[i]>60000&&area[i]<76000)
-		{
-			e++;
-			eIdx.push_back(i);
-		}	
-		if(area[i]>7000 && area[i]<10000)
+		if(area[i]>6000 && area[i]<11000)
 		{
 			r++;
 			rIdx.push_back(i);
+			continue;
 		}
-		if((area[i]>7000 && area[i]<9000)|| (area[i]>11000 && area[i] <12000))
+		if((area[i]>250 && area[i]<350))
 		{
 			s++;
 			sIdx.push_back(i);
+			continue;
 		}
+
+		if(area[i]>50&&area[i]<100)
+		{
+			e++;
+			eIdx.push_back(i);
+			continue;
+		}	
+		
 
 		//if(area[i]>1000)
 		//	k++;
@@ -233,7 +240,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 
 	}
 
-	else if(s==5)
+	else if(s==1)
 	{
 		(*simon)++;
 		*etch=0;

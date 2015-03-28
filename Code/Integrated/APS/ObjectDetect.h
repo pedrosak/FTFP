@@ -7,7 +7,7 @@
 class ObjectDetect
 {
 public:
-  ObjectDetect(int trigPin, int echoPin, Support *support);
+  ObjectDetect(Support *support);
   void Commence(NewPing sonar);
   bool Approach(NewPing sonar);
   void WhatObj(int incomingByte);
