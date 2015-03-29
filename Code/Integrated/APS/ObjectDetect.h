@@ -14,5 +14,6 @@ public:
   int IdentifyAndAlign();
 private:
   Support *_support; //pointer to support object. Will be set in constructor
+  int strToInt(char AStr[], byte ALen); //converts incoming serial data to integer
 };
 

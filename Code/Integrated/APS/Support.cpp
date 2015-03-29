@@ -63,11 +63,11 @@ void Support::Shuffle(int dist) //move system left or right
   int encoderPinA = encoderPins[2];
   int encoderPinB = encoderPins[3];
   
-  if(dist<0) //left
+  if(dist>0) //right
   {
-    backMotor->run(FORWARD);   
+    backMotor->run(FORWARD); 
   }
-  else //right
+  else //left
   {
     backMotor->run(BACKWARD);
   }
@@ -75,7 +75,7 @@ void Support::Shuffle(int dist) //move system left or right
   backMotor->setSpeed(40);
   
   //while our encoder position is less than our distance we need to move
-  while(abs((float)encoderPos)<abs(100))
+  while(abs((float)encoderPos)<abs(dist))
   {
      n = digitalRead(encoderPinA);
      if((encoderPinALast == LOW) && (n==HIGH))

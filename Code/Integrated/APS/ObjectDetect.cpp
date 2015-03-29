@@ -14,7 +14,7 @@ bool ObjectDetect::Approach(NewPing sonar)
 {
   float uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
   //Serial.println((float)(uS / US_ROUNDTRIP_CM));
-  while (!(((float)(uS / US_ROUNDTRIP_CM) >= 7.0 && (float)(uS / US_ROUNDTRIP_CM) <= 7.3)))
+  while (!(((float)(uS / US_ROUNDTRIP_CM) >= 6.2 && (float)(uS / US_ROUNDTRIP_CM) <= 6.6)))
   {
     delay(50);
     _support->Creep();
@@ -33,38 +33,16 @@ int ObjectDetect::IdentifyAndAlign()
     if (Serial.available() > 0) //blocking serial call
     {
       int incomingByte = Serial.read();
+      int dist;
+      byte readLen = 0;
+      char buffer[64];
       if (incomingByte == 'X')
       {
-          Serial.write('X');
-          while(Serial.available()>0);
-          int dist = 0;
-          bool negative = false;
-          char incomingByte;
-          while(1)
-          {
-            incomingByte = Serial.read();
-            
-            if(incomingByte == '\n') break;
-            if(incomingByte == -1) continue;
-            if(incomingByte == 45) 
-            {
-              negative = true;
-              continue;
-            }
-            dist *=10;
-            dist=((incomingByte-48)+dist);
-            Serial.write('G');
-    
-          }
-          if(negative)
-          {
-            dist *=-1;
-          }
-          _support->Shuffle(dist);
-          Serial.write('M');
-
-          
-        
+        while(!Serial.available());
+        readLen = Serial.readBytes(buffer,64);
+        dist = strToInt(buffer,readLen);
+        _support->Shuffle(dist);
+        Serial.write('M');
       }
       else if (incomingByte > 48 && incomingByte < 52) //between one and 4
       {
@@ -98,6 +76,32 @@ void ObjectDetect::WhatObj(int incomingByte)
   Serial.write('C');
 }
 
-
+//used to convert incoming serial data to an integer
+int ObjectDetect::strToInt(char AStr[], byte ALen)
+{
+ int Result = 0;
+ int c;
+ bool negative = false;
+ for(int i = 0; i < ALen; i++)
+ {
+   if(AStr[i] == 45)
+   {
+     negative = true;
+     continue;
+   }
+   
+  c = int(AStr[i] - '0');
+  if(c<0 || c >9)
+   return -1;
+  Result = (Result * 10) +c ;
+  
+ } 
+ 
+ if(negative)
+  return Result*-1; 
+ else
+  return Result;
+  
+}
 
 

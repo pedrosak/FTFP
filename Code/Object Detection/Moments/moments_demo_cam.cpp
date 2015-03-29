@@ -75,7 +75,7 @@ int main(int, char** argv)
 	tty.c_cflag &= ~CRTSCTS;       // no flow control
 	tty.c_cc[VMIN] = 1;                  // read doesn't block
 	tty.c_cc[VTIME] = 0;                  // 0.5 seconds read timeout
-	tty.c_cflag |= CREAD | CLOCAL;     // turn on READ & ignore ctrl lines
+	tty.c_cflag |= CREAD;     // turn on READ & ignore ctrl lines
 
 
 
@@ -300,22 +300,25 @@ void printShuffle(float Diff)
 {
 		
 	char buf = '\0';
+	/*
 	do
 	{
 		read(USB, &buf, 1);
 
 	} while (buf != 'X');
 	cout << "Char from Arduino: " << buf << endl;
+			tcflush(USB, TCIFLUSH);
+			*/
 	cout<<"printing shuffle"<<endl;
 	float inches = Diff*IN_PER_PIXEL;
 	int encodes = inches/ENC_PER_INCH;
 	static char float2str[50];
 	cout<<"before sprint"<<endl;
-	int n =sprintf(float2str,"%d\n",encodes);
+	int n =sprintf(float2str,"%d",encodes);
 	cout<<"number of bytes written: "<<n<<endl;
 	cout<<float2str<<endl;
 	//need to write how many inches to shuffle (or cm)
-	write(USB, float2str, 1);
+	write(USB, float2str, n);
 
 
 
@@ -325,7 +328,6 @@ void printShuffle(float Diff)
 	do
 	{
 		read(USB, &buf, 1);
-		cout<<buf<<endl;
 
 	} while (buf != 'M');
 	//response.append( &buf );
