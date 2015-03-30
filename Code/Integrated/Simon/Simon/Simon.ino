@@ -31,11 +31,16 @@ boolean gameStarted = false;
 boolean start = false;
 
 //PWM Frequency is set to example setting. Analog servo run at 60 Hz.
-//I need to find out the frequency for our current micro servos.
+//Micro Servos operate at 60 Hz (Checked by Kurt)
 const int PWMFreq = 60;
 
-// const int PRESS_ANGLE = 50; //angle at which servo will actuate to press button
-// const int REST_ANGLE = 100; //angle at which servo will rest
+// our servo # counter
+uint8_t servonum = 0;
+
+//blue - 0 and 1, red - 2 and 3, green - 4 and 5, yellow - 6 and 7, center - 8 and 9
+//center servo not mounted. Max/Min (maxMinValues 8 and 9) not set yet.
+int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
+
 int oldCounter = 0;
 
 void setup()
@@ -44,6 +49,9 @@ void setup()
   Serial.begin(9600);
   servoShield.begin();
   servoShield.setPWMFreq(PWMFreq);
+
+  //Puts all servos in the UP position
+  initializeServo();
 
 }
 
@@ -57,11 +65,28 @@ void loop() {
   /*
   read the pins to get their current light values
    reads from each photocell. Numbering convention:
-   red - 0
-   blue - 1
-   yellow - 2
-   green - 3
+   blue - 0
+   red - 1
+   green - 2
+   yellow - 3
+   center - 4
    */
+
+   /* //Test Code\\
+   int test[] = {3,0,2,1};
+   for (int i = 0; i < 4; i++)
+   {
+    colorSequence.push(test[i]);
+    start = true;
+   }
+
+  if ((colorSequence.count()) && start)
+  {
+    oldCounter = colorSequence.count();
+    Play(&colorSequence);
+    start = false;
+  }
+  */
 
   for (int i = 0; i < 4; i++)
   {
@@ -83,6 +108,7 @@ void loop() {
     Play(&colorSequence);
     start = false;
   }
+
 }
 
 
@@ -101,34 +127,33 @@ void Play(QueueArray <int> *colorSequence)
 void actuateServo(int servoNum)
 {
    /*
-   I need to find out the max and min of the servos.
-   For now I am setting them to the example settings.
-   IF YOU ARE READING THIS, DO NOT RUN THIS CODE OR YOU MIGHT BREAK THE SERVOS.
+    Current simon says interrector : Version 1 (2 by 4 and hammer version)
+    All 4 Micro servos have been tested. Center servo is not mounted and still
+    missing Max/Min (Kurt, March 29)
 
    use this function to actuate the servo.
    servo numbering scheme:
-   center - 0
+   blue - 0
    red - 1
-   blue - 2
+   green - 2
    yellow - 3
-   green - 4
+   center - 4
    */
-
-  //center - 0 and 1, red - 2 and 3, blue - 4 and 5, yellow - 6 and 7, green - 8 and 9
-  int maxMinValues[] = {150,600,150,600,150,600,150,600,150,600};
+  
+  //Fetches servos min and max from maxMinValues array.
   int SERVOMIN = maxMinValues[servoNum*2];
   int SERVOMAX = maxMinValues[(servoNum*2) + 1];
 
   Serial.print("Servo num:");
   Serial.println(servoNum);
 
-  //Push pushrod downwards.
+  //Bring push rod back up to starting posistion.
   for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) 
   {
     servoShield.setPWM(servoNum, 0, pulselen);
   }
 
-  //Bring push rod back up to starting posistion.
+  //Push pushrod downwards.
   for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--) 
   {
     servoShield.setPWM(servoNum, 0, pulselen);
@@ -149,5 +174,23 @@ void startGame()
     }
     cellThresholds[i] = ave.mode();
   }
-  actuateServo(0);
+  actuateServo(4);
+}
+
+
+//Initializes servo to up position
+//Need to add a 5th servo for center servo which has not been installed yet (kurt)
+void initializeServo() 
+{
+  int number_of_servos = 4;
+
+  for(int z = 0; z < number_of_servos; z++) 
+  {
+    int minVals = maxMinValues[z*2];
+    int maxVals = maxMinValues[(z*2) + 1];
+    for (uint16_t pulselen = minVals; pulselen < maxVals; pulselen++) 
+  {
+    servoShield.setPWM(z, 0, pulselen);
+  }
+  }
 }
