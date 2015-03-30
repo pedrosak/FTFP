@@ -93,7 +93,7 @@ void loop() {
     int reading = analogRead(pinHolding[i]);
     if (reading - cellThresholds[i] > LIT_THRESHOLD /*some value*/)
     {
-      colorSequence.push(i + 1);
+      colorSequence.push(i);
       start = true;
       while (reading - cellThresholds[i] > LIT_THRESHOLD )
       {
@@ -162,8 +162,10 @@ void actuateServo(int servoNum)
 
 void startGame()
 {
+  //Puts all servos in the UP position
+  initializeServo();
+  
   //we need to read all the sensors about 100 times. Get mode. This will calibrate each sensor for its own lighting conditions
-
   for (int i = 0; i < 4; i++)
   {
     Average<int> ave(100);
