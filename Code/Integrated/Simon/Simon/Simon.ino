@@ -1,7 +1,7 @@
-#include <Adafruit_PWMServoDriver.h>
 #include <Servo.h>
 #include <Stepper.h>
 #include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
 #include <QueueArray.h>
 #include <Average.h>
 #include <Servo.h>
