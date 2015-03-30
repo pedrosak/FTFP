@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/home/pi/Capstone/Software/ComputerVision/Moments/cam_working.cpp
+/home/pi/ftfp/Code/Object Detection/Moments/cam_working.cpp
 opencv2/imgcodecs.hpp
-/home/pi/Capstone/Software/ComputerVision/Moments/opencv2/imgcodecs.hpp
+/home/pi/ftfp/Code/Object Detection/Moments/opencv2/imgcodecs.hpp
 opencv2/highgui/highgui.hpp
-/home/pi/Capstone/Software/ComputerVision/Moments/opencv2/highgui/highgui.hpp
+/home/pi/ftfp/Code/Object Detection/Moments/opencv2/highgui/highgui.hpp
 opencv2/imgproc/imgproc.hpp
-/home/pi/Capstone/Software/ComputerVision/Moments/opencv2/imgproc/imgproc.hpp
+/home/pi/ftfp/Code/Object Detection/Moments/opencv2/imgproc/imgproc.hpp
 iostream
 -
 stdio.h

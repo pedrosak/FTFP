@@ -4,7 +4,8 @@
  * @author OpenCV team
  */
 
-#define IN_PER_PIXEL 0.00859375
+#define IN_PER_PIXEL 0.0078125
+#define ENC_PER_INCH 0.00806452 //how many inches are in one turn of the encoder  
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -41,6 +42,7 @@ struct termios tty_old;
 struct termios cam_tty;
 
 /// Function header
+void junction();
 void capImage();
 void thresh_callback(int, void*);
 vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* etch, int* simon);
@@ -73,7 +75,7 @@ int main(int, char** argv)
 	tty.c_cflag &= ~CRTSCTS;       // no flow control
 	tty.c_cc[VMIN] = 1;                  // read doesn't block
 	tty.c_cc[VTIME] = 0;                  // 0.5 seconds read timeout
-	tty.c_cflag |= CREAD | CLOCAL;     // turn on READ & ignore ctrl lines
+	tty.c_cflag |= CREAD;     // turn on READ & ignore ctrl lines
 
 
 
@@ -89,7 +91,8 @@ int main(int, char** argv)
 		do
 		{
 			read(USB, &buf, 1);
-		} while (buf != 'C' || buf !='J');
+
+		} while (buf != 'C');
 		//response.append( &buf );
 		cout << "Camera on!: " << buf << endl;
 		tcflush(USB, TCIFLUSH);
@@ -233,22 +236,27 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 
 	for (size_t i = 0; i < area.size(); i++)
 	{
-
-		if(area[i]>60000&&area[i]<76000)
-		{
-			e++;
-			eIdx.push_back(i);
-		}	
-		if(area[i]>7000 && area[i]<10000)
+		if(area[i]>6000 && area[i]<11000)
 		{
 			r++;
 			rIdx.push_back(i);
+			continue;
 		}
-		if((area[i]>7000 && area[i]<9000)|| (area[i]>11000 && area[i] <12000))
+
+		if((area[i]>250 && area[i]<350))
 		{
 			s++;
 			sIdx.push_back(i);
+			continue;
 		}
+		if(area[i]>50&&area[i]<100)
+		{
+			e++;
+			eIdx.push_back(i);
+			continue;
+		}	
+		
+		
 
 
 
@@ -265,7 +273,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 
 	}
 
-	else if (s == 5)
+	else if (s == 1)
 	{
 		(*simon)++;
 		*etch = 0;
@@ -290,19 +298,29 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 
 void printShuffle(float Diff)
 {
+		
+	char buf = '\0';
+	/*
+	do
+	{
+		read(USB, &buf, 1);
 
+	} while (buf != 'X');
+	cout << "Char from Arduino: " << buf << endl;
+			tcflush(USB, TCIFLUSH);
+			*/
 	cout<<"printing shuffle"<<endl;
 	float inches = Diff*IN_PER_PIXEL;
-	static char float2str[1];
-	//cout<<"before sprint"<<endl;
-	sprintf(float2str,"%f",inches);
+	int encodes = inches/ENC_PER_INCH;
+	static char float2str[50];
+	cout<<"before sprint"<<endl;
+	int n =sprintf(float2str,"%d",encodes);
+	cout<<"number of bytes written: "<<n<<endl;
 	cout<<float2str<<endl;
 	//need to write how many inches to shuffle (or cm)
-	write(USB, float2str, 1);
+	write(USB, float2str, n);
 
 
-	int n = 0;
-	char buf = '\0';
 
 	/* Whole response*/
 	std::string response;
@@ -310,6 +328,7 @@ void printShuffle(float Diff)
 	do
 	{
 		read(USB, &buf, 1);
+
 	} while (buf != 'M');
 	//response.append( &buf );
 	//tcflush(USB, TCIFLUSH);
@@ -339,7 +358,7 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		if (abs(average) > 30)
 		{
 			write(USB, "X", 1);
-
+		
 			printShuffle(average);
 		}
 		else

@@ -2,10 +2,14 @@
 
 
 //the constructor will take in a pointer to the arm motor
-Support::Support(Adafruit_StepperMotor *pointerToArm)
+Support::Support(Adafruit_StepperMotor *pointerToArm, Adafruit_DCMotor *pointerToLeft, Adafruit_DCMotor *pointerToBack, Adafruit_DCMotor *pointerToRight, int *pointerToEncoderPins)
 { 
   
   arm = pointerToArm;
+  leftMotor = pointerToLeft;
+  backMotor = pointerToBack;
+  rightMotor = pointerToRight;
+  encoderPins = pointerToEncoderPins;
 
 }
 
@@ -50,15 +54,44 @@ void Support::Creep()
   //move system forward at a very slow rate
 }
 
-void Support::Shuffle(float dist) //move system left or right
+void Support::Shuffle(int dist) //move system left or right
 {
-  if(dist<0) //left
+  //local variable to keep track of how far the encoder has moved
+  int encoderPos = 0;
+  int encoderPinALast = LOW;
+  int n = LOW;
+  int encoderPinA = encoderPins[2];
+  int encoderPinB = encoderPins[3];
+  
+  if(dist>0) //right
   {
-    
+    backMotor->run(FORWARD); 
   }
-  else //right
+  else //left
   {
-    
-    
+    backMotor->run(BACKWARD);
   }
+
+  backMotor->setSpeed(40);
+  
+  //while our encoder position is less than our distance we need to move
+  while(abs((float)encoderPos)<abs(dist))
+  {
+     n = digitalRead(encoderPinA);
+     if((encoderPinALast == LOW) && (n==HIGH))
+     {
+      if(digitalRead(encoderPinB)==LOW)
+      {
+       encoderPos--; 
+      }
+      else
+      {
+       encoderPos++;
+      }
+     }
+     encoderPinALast = n;
+  }
+  backMotor->run(RELEASE);
+  
+  return;
 }

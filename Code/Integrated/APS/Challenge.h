@@ -3,8 +3,8 @@
 #endif // ObjectDetect_h
 #include "Support.h"
 #include <QueueArray.h>
-#include <Servo.h>
 #include <Average.h>
+#include <Servo.h>
 #include <Adafruit_MotorShield.h>
 
 class Challenge

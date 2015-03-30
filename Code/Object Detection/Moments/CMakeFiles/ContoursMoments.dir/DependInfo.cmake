@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/pi/Capstone/Software/ComputerVision/Moments/moments_demo_cam.cpp" "/home/pi/Capstone/Software/ComputerVision/Moments/CMakeFiles/ContoursMoments.dir/moments_demo_cam.cpp.o"
+  "/home/pi/ftfp/Code/Object Detection/Moments/moments_demo_cam.cpp" "/home/pi/ftfp/Code/Object Detection/Moments/CMakeFiles/ContoursMoments.dir/moments_demo_cam.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

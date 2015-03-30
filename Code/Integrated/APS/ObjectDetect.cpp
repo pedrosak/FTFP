@@ -4,7 +4,7 @@
 
 
 
-ObjectDetect::ObjectDetect(int trigPin, int echoPin, Support *support)
+ObjectDetect::ObjectDetect(Support *support)
 {
   _support = support; //pointer to the support object. All modules will use same support object
 }
@@ -13,10 +13,13 @@ ObjectDetect::ObjectDetect(int trigPin, int echoPin, Support *support)
 bool ObjectDetect::Approach(NewPing sonar)
 {
   float uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-  while (((float)(uS / US_ROUNDTRIP_CM) >= 4.1 && (float)(uS / US_ROUNDTRIP_CM) <= 4.3))
+  //Serial.println((float)(uS / US_ROUNDTRIP_CM));
+  while (!(((float)(uS / US_ROUNDTRIP_CM) >= 6.2 && (float)(uS / US_ROUNDTRIP_CM) <= 6.6)))
   {
     delay(50);
     _support->Creep();
+    uS = sonar.ping();
+    //Serial.println((float)(uS / US_ROUNDTRIP_CM));
   }
 
   return true;
@@ -27,18 +30,23 @@ int ObjectDetect::IdentifyAndAlign()
 {
   while (true) //we will escape this only once we have a valid byte read
   {
-    while (Serial.available() > 0) //blocking serial call
+    if (Serial.available() > 0) //blocking serial call
     {
       int incomingByte = Serial.read();
+      int dist;
+      byte readLen = 0;
+      char buffer[64];
       if (incomingByte == 'X')
       {
-        float dist = Serial.parseFloat(); //might want some form of hand shake here to indicate that its okay to send over distance. Will investigate
+        while(!Serial.available());
+        readLen = Serial.readBytes(buffer,64);
+        dist = strToInt(buffer,readLen);
         _support->Shuffle(dist);
         Serial.write('M');
       }
       else if (incomingByte > 48 && incomingByte < 52) //between one and 4
       {
-        return incomingByte - 48; //get rid of ascii encoding
+        return incomingByte - 48; //get rid of ascii encodingascii ch
       }
     }
   }
@@ -65,8 +73,35 @@ void ObjectDetect::WhatObj(int incomingByte)
         break;
       }
   }
+  Serial.write('C');
 }
 
-
+//used to convert incoming serial data to an integer
+int ObjectDetect::strToInt(char AStr[], byte ALen)
+{
+ int Result = 0;
+ int c;
+ bool negative = false;
+ for(int i = 0; i < ALen; i++)
+ {
+   if(AStr[i] == 45)
+   {
+     negative = true;
+     continue;
+   }
+   
+  c = int(AStr[i] - '0');
+  if(c<0 || c >9)
+   return -1;
+  Result = (Result * 10) +c ;
+  
+ } 
+ 
+ if(negative)
+  return Result*-1; 
+ else
+  return Result;
+  
+}
 
 
