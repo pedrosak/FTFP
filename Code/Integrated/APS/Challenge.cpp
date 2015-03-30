@@ -1,6 +1,6 @@
 #include "Challenge.h"
 
-Challenge::Challenge(Support *support)
+Challenge::Challenge(Support *support, Adafruit_PWMServoDriver *servoShield)
 {
 
   //initialization of Simon
@@ -9,23 +9,10 @@ Challenge::Challenge(Support *support)
   photocellPin2 = 2;
   photocellPin3 = 3;
 
-  LIT_THRESHOLD = 100;
-
-  PRESS_ANGLE = 50; //angle at which servo will actuate to press button
-  REST_ANGLE = 100; //angle at which servo will rest
-
-  servoCenter.attach(10);
-  servoRed.attach(10);
-  servoBlue.attach(10);
-  servoYellow.attach(10);
-  servoGreen.attach(10);
-  servoCenter.write(REST_ANGLE);
-  servoRed.write(REST_ANGLE);
-  servoBlue.write(REST_ANGLE);
-  servoYellow.write(REST_ANGLE);
-  servoGreen.write(REST_ANGLE);
   _support = support;
-
+  _servoShield = servoShield;
+  int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
+  pointerToMaxMinValues = maxMinValues;
 }
 
 /*
@@ -104,10 +91,11 @@ This is the function to play simon. It will get a calibration for
  */
 bool Challenge::Simon()
 {
-
+  initializeServo();
   int pinHolding[] = {
     photocellPin, photocellPin1, photocellPin2, photocellPin3
   }; 
+  int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
   boolean start = false;
   int oldCounter = 0;
 
@@ -233,5 +221,19 @@ void Challenge::startSimon(int pinHolding[], int length)
   actuateServo(0);
 }
 
+//Initializes servo to up position
+//Need to add a 5th servo for center servo which has not been installed yet (kurt)
+void Challenge::initializeServo() 
+{
+    for(int z = 5; z >=0; z--) 
+    {
+      int minVals = *(pointerToMaxMinValues+z*2);
+      int maxVals = *(pointerToMaxMinValues+z*2+1);
+      for (uint16_t pulselen = minVals; pulselen < maxVals; pulselen++) 
+      {
+        _servoShield->setPWM(z, 0, pulselen);
+      }
+    }
+}
 
 

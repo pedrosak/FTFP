@@ -2,6 +2,7 @@
 #define Support_h
 #endif // Support_h
 #include <Adafruit_MotorShield.h>
+#include <Wire.h>
 
 //this class is intended to be used for support functions (i.e. moving the arm, line follow)
 //functions that have no home otherwise.

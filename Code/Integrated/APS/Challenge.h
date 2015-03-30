@@ -5,29 +5,32 @@
 #include <QueueArray.h>
 #include <Average.h>
 #include <Servo.h>
+#include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_MotorShield.h>
+
 
 class Challenge
 {
   public:
-    Challenge(Support *support);
+    Challenge(Support *support, Adafruit_PWMServoDriver *servoShield);
     bool Rubiks(Adafruit_StepperMotor *rubiks);
     bool Etch(Adafruit_StepperMotor *left, Adafruit_StepperMotor *right, int steps);
     bool Simon();
     bool Card();
   private:
     Support *_support; //pointer to support object. Will be set in constructor
-    //any shield relating to the arm needs to be in here
-
+    Adafruit_PWMServoDriver *_servoShield;
     //begin methods for Simon
     void Play(QueueArray <int> *colorSequence);
     void actuateServo(int servoNum);
     void startSimon(int pinHolding[], int length);
+    void initializeServo();
     //end methods for Simon
 
     //begin variables for Simon
     int cellThresholds[4];
-
+    int *pointerToMaxMinValues;
+    
     QueueArray <int> colorSequence;
 
     int photocellVals[4]; //state of each of the photocells

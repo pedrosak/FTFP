@@ -5,6 +5,7 @@
 #include <QueueArray.h>
 #include <Average.h>
 #include <Servo.h>
+#include <Adafruit_MotorShield.h>
 
 //We might have to address this shield. If so, find out which address
 //was given to this shield and input it inside the (). e.x: Adafruit_PWMServoDriver(ADDRESS)
