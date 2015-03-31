@@ -11,15 +11,16 @@ Challenge::Challenge(Support *support, Adafruit_PWMServoDriver *servoShield)
 
   _support = support;
   _servoShield = servoShield;
-  int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
+  int maxMinValues[] = {
+    230,310,230,310,230,310,370,480,100,600  };
   pointerToMaxMinValues = maxMinValues;
 }
 
 /*
 This function will twist the Rubik's cube. The # of steps is half of
-the number of steps in the stepper motor. We pass this function a 
-pointer to the stepper motor
-*/
+ the number of steps in the stepper motor. We pass this function a 
+ pointer to the stepper motor
+ */
 bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
 {
 
@@ -33,16 +34,16 @@ bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
 
 /*
 This function will play Etch a sketch. We pass it a pointer to the stepper motors it will be using
-*/
+ */
 bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right, int steps)
 {
   _support->Arm(200,false); //lower the arm to etch
   left->step(2.75*steps, FORWARD, DOUBLE); // 2 full rotations of knob
-  
+
   //midpoint left
   left->step(0.5*steps, BACKWARD, DOUBLE); //go back a little for last E
 
-  //E going down
+    //E going down
   right->step(0.3*steps, BACKWARD, DOUBLE);
   left->step(steps, BACKWARD, DOUBLE);
   right->step(0.3*steps, BACKWARD, DOUBLE);
@@ -55,13 +56,13 @@ bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *r
   right->step(0.3*steps, FORWARD, DOUBLE);
   left->step(steps, FORWARD, DOUBLE);
   right->step(0.3*steps, FORWARD, DOUBLE);
-  
+
   //go back down
   right->step(0.6*steps, BACKWARD, DOUBLE);
 
   //space for first E
   left->step(0.6*steps, BACKWARD, DOUBLE);
-  
+
   //going up first E
   right->step(0.3*steps, FORWARD, DOUBLE);
   left->step(steps, FORWARD, DOUBLE);
@@ -95,14 +96,14 @@ bool Challenge::Simon()
   int pinHolding[] = {
     photocellPin, photocellPin1, photocellPin2, photocellPin3
   }; 
-  int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
+  int maxMinValues[] = {
+    230,310,230,310,230,310,370,480,100,600  };
   boolean start = false;
   int oldCounter = 0;
 
   _support->Arm(200,false); //lower arm to Simon
   startSimon(pinHolding,4);
   unsigned long time = millis(); //get current time processor has been running
-  Serial.println("Starting Simon");
   while((millis()-time)<=(unsigned long)(15*1000)) //if current time minus our beginning time stamp is less than 15 seconds
   {
     for (int i = 0; i < 4; i++)
@@ -126,7 +127,6 @@ bool Challenge::Simon()
       start = false;
     }
   }
-    Serial.println("Ending Simon");
   _support->Arm(200,true); //return arm to native position
   return true;
 
@@ -142,7 +142,7 @@ bool Challenge::Card()
 
   _support->Arm(200,true);
   //return true if the system didn't encounter any issues.
-  
+
   return true;
 }
 
@@ -165,40 +165,34 @@ This function will actuate each servo on simon. We pass it the
  */
 void Challenge::actuateServo(int servoNum)
 {
-  switch (servoNum)
+  /*
+    Current simon says interrector : Version 1 (2 by 4 and hammer version)
+    All 4 Micro servos have been tested. Center servo is not mounted and still
+    missing Max/Min (Kurt, March 29)
+
+   use this function to actuate the servo.
+   servo numbering scheme:
+   blue - 0
+   red - 1
+   green - 2
+   yellow - 3
+   center - 4
+   */
+  
+  //Fetches servos min and max from maxMinValues array.
+  int SERVOMIN = *(pointerToMaxMinValues+servoNum*2);;
+  int SERVOMAX = *(pointerToMaxMinValues+servoNum*2+1);
+
+  //Bring push rod back up to starting posistion.
+  for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) 
   {
+    _servoShield->setPWM(servoNum, 0, pulselen);
+  }
 
-  case 0:
-    {
-      servoCenter.write(PRESS_ANGLE);
-      servoCenter.write(REST_ANGLE);
-      break;
-    }
-  case 1:
-    {
-      servoRed.write(PRESS_ANGLE);
-      servoRed.write(REST_ANGLE);
-      break;
-    }
-  case 2:
-    {
-      servoBlue.write(PRESS_ANGLE);
-      servoBlue.write(REST_ANGLE);
-      break;
-    }
-  case 3:
-    {
-      servoYellow.write(PRESS_ANGLE);
-      servoYellow.write(REST_ANGLE);
-      break;
-    }
-  case 4:
-    {
-      servoGreen.write(PRESS_ANGLE);
-      servoGreen.write(REST_ANGLE);
-      break;
-    }
-
+  //Push pushrod downwards.
+  for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--) 
+  {
+    _servoShield->setPWM(servoNum, 0, pulselen);
   }
 }
 
@@ -225,15 +219,16 @@ void Challenge::startSimon(int pinHolding[], int length)
 //Need to add a 5th servo for center servo which has not been installed yet (kurt)
 void Challenge::initializeServo() 
 {
-    for(int z = 5; z >=0; z--) 
+  for(int z = 5; z >=0; z--) 
+  {
+    int minVals = *(pointerToMaxMinValues+z*2);
+    int maxVals = *(pointerToMaxMinValues+z*2+1);
+    for (uint16_t pulselen = minVals; pulselen < maxVals; pulselen++) 
     {
-      int minVals = *(pointerToMaxMinValues+z*2);
-      int maxVals = *(pointerToMaxMinValues+z*2+1);
-      for (uint16_t pulselen = minVals; pulselen < maxVals; pulselen++) 
-      {
-        _servoShield->setPWM(z, 0, pulselen);
-      }
+      _servoShield->setPWM(z, 0, pulselen);
     }
+  }
 }
+
 
 

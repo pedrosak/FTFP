@@ -17,6 +17,7 @@ public:
    bool Finish();
    void Creep();
    void Shuffle(int dist);
+   void BackForward(int dist);
 private:
   Adafruit_StepperMotor *arm; //pointer to the arm motor. Will be set in the constructor
   Adafruit_DCMotor *leftMotor; //pointer to the left drive motor. Will be set in the contrustor
