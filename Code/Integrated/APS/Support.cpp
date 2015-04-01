@@ -72,7 +72,7 @@ void Support::Shuffle(int dist) //move system left or right
     backMotor->run(BACKWARD);
   }
 
-  backMotor->setSpeed(40);
+  backMotor->setSpeed(100);
   
   //while our encoder position is less than our distance we need to move
   while(abs((float)encoderPos)<abs(dist))
@@ -103,18 +103,22 @@ void Support::BackForward(int dist) //move the system forward or backward
   int encoderPos = 0;
   int encoderPinALast = LOW;
   int n = LOW;
-  int encoderPinA = encoderPins[0];
-  int encoderPinB = encoderPins[1];
+  int encoderPinA;
+  int encoderPinB;
   
   if(dist>0) //forward
   {
     leftMotor->run(BACKWARD); 
     rightMotor->run(FORWARD);
+    encoderPinA = encoderPins[0];
+    encoderPinB = encoderPins[1];
   }
   else //backward
   {
     leftMotor->run(FORWARD); 
     rightMotor->run(BACKWARD);
+    encoderPinA = encoderPins[4];
+    encoderPinB = encoderPins[5];
   }
 
   leftMotor->setSpeed(100);

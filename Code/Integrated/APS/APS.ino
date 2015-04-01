@@ -119,6 +119,7 @@ void loop()
       support.BackForward((int)(5.5/ENC_PER_INCH));
       Cha.Etch(left, right, etchSteps);
       support.BackForward((int)(-5.5/ENC_PER_INCH));
+      delay(100);
       support.Shuffle((int)(4/ENC_PER_INCH));
       break;
     }
@@ -128,6 +129,7 @@ void loop()
       support.BackForward((int)(6/ENC_PER_INCH));
       Cha.Rubiks(rubiks);
       support.BackForward((int)(-6/ENC_PER_INCH));
+      delay(500);
       support.Shuffle((int)(-4/ENC_PER_INCH));
       break;
     }
@@ -137,6 +139,7 @@ void loop()
       support.BackForward((int)(7/ENC_PER_INCH));
       Cha.Simon();
       support.BackForward((int)(-7/ENC_PER_INCH));
+      delay(100);
       support.Shuffle((int)(4/ENC_PER_INCH));
       break;
     }
