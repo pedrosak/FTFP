@@ -167,7 +167,7 @@ void thresh_callback(int, void* )
 	{
 			//cout<<area[i]<<endl; 
 			//cout<<area[needDrawing[i]]<<endl;
-			//if((area[i]>250)&&(area[i]<350))
+			//if(area[i]>50 && area[i]<80)
 			//{
 			//cout<<area[i]<<endl;
 			//cout<<needDrawing[i]<<endl;
@@ -209,14 +209,14 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 			rIdx.push_back(i);
 			continue;
 		}
-		if((area[i]>250 && area[i]<350))
+		if((area[i]>90000)&&(area[i]<110000))
 		{
 			s++;
 			sIdx.push_back(i);
 			continue;
 		}
 
-		if(area[i]>50&&area[i]<100)
+		if((area[i]>50)&&(area[i]<80))
 		{
 			e++;
 			eIdx.push_back(i);
@@ -249,7 +249,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 		return sIdx;
 		
 	}
-	else if(e==1)
+	else if(e==1 && r<4)
 	{
 		(*etch)++;
 		*simon=0;

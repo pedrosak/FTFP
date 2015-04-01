@@ -5,21 +5,20 @@
 #include <QueueArray.h>
 #include <Average.h>
 #include <Servo.h>
-#include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_MotorShield.h>
 
 
 class Challenge
 {
   public:
-    Challenge(Support *support, Adafruit_PWMServoDriver *servoShield);
+    Challenge(Support *support);
     bool Rubiks(Adafruit_StepperMotor *rubiks);
     bool Etch(Adafruit_StepperMotor *left, Adafruit_StepperMotor *right, int steps);
     bool Simon();
     bool Card();
   private:
     Support *_support; //pointer to support object. Will be set in constructor
-    Adafruit_PWMServoDriver *_servoShield;
+    //Adafruit_PWMServoDriver *_servoShield;
     //begin methods for Simon
     void Play(QueueArray <int> *colorSequence);
     void actuateServo(int servoNum);

@@ -1,4 +1,3 @@
-#include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_MotorShield.h>
 #include "ObjectDetect.h"
 #include <NewPing.h>
@@ -22,10 +21,10 @@ NewPing sonar(trg, echo, MAX_DISTANCE);
 Adafruit_MotorShield Etch = Adafruit_MotorShield(0x60);
 Adafruit_MotorShield Rubiks = Adafruit_MotorShield(0x61);
 Adafruit_MotorShield Move = Adafruit_MotorShield(0x62);
-Adafruit_PWMServoDriver servoShield = Adafruit_PWMServoDriver();
+//Adafruit_PWMServoDriver servoShield = Adafruit_PWMServoDriver();
 const int etchSteps = 48; //configure based upon steppers used
 const int PWMFreq = 60; //Micro Servos operate at 60 Hz (Checked by Kurt)
-
+int obj = 0;
 /*
 READ ME BEFORE PLUGGING THINGS IN!
  
@@ -73,20 +72,21 @@ int encoderPins[] = {
 
 
 Support support(arm, leftMotor, backMotor, rightMotor, encoderPins); 
-Challenge Cha(&support, &servoShield);
+Challenge Cha(&support);
 ObjectDetect ObjDet(&support);
 
 void setup() {
 
   Serial.begin(9600);
-  servoShield.begin();
-  servoShield.setPWMFreq(PWMFreq);
+  //servoShield.begin();
+  //servoShield.setPWMFreq(PWMFreq);
   Etch.begin();
   Rubiks.begin();
   Move.begin();
   left ->setSpeed(48); //ask Tito why this needs to be 48
   right->setSpeed(48);
-
+  arm->step(100,FORWARD,DOUBLE);
+  arm->step(150,BACKWARD,DOUBLE);
   //set all of our encoder pins to input
   for(int i=0; i<(sizeof(encoderPins)/sizeof(int))-1;i++)
   {
@@ -108,31 +108,40 @@ void loop()
   //if we find a challenge zone
   ObjDet.Approach(sonar);
   Serial.write('C');
-  int obj = ObjDet.IdentifyAndAlign();
+  obj = ObjDet.IdentifyAndAlign();
   ObjDet.WhatObj(obj);
 
   switch (obj)
   {
   case 1:
     {
+      support.Shuffle((int)(-4/ENC_PER_INCH));
+      support.BackForward((int)(5.5/ENC_PER_INCH));
       Cha.Etch(left, right, etchSteps);
+      support.BackForward((int)(-5.5/ENC_PER_INCH));
+      support.Shuffle((int)(4/ENC_PER_INCH));
       break;
     }
   case 2:
     {
-      support.Shuffle((int)(2*ENC_PER_INCH));
-      support.BackForward((int)(2*ENC_PER_INCH));
+      support.Shuffle((int)(4/ENC_PER_INCH));
+      support.BackForward((int)(6/ENC_PER_INCH));
       Cha.Rubiks(rubiks);
-      support.BackForward((int)(-2*ENC_PER_INCH));
-      support.Shuffle((int)(-2*ENC_PER_INCH));
+      support.BackForward((int)(-6/ENC_PER_INCH));
+      support.Shuffle((int)(-4/ENC_PER_INCH));
       break;
     }
   case 3:
     {
+      support.Shuffle((int)(-4/ENC_PER_INCH));
+      support.BackForward((int)(7/ENC_PER_INCH));
       Cha.Simon();
+      support.BackForward((int)(-7/ENC_PER_INCH));
+      support.Shuffle((int)(4/ENC_PER_INCH));
       break;
     }
   }
+  
 }
 
 

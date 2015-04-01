@@ -1,6 +1,6 @@
 #include "Challenge.h"
 
-Challenge::Challenge(Support *support, Adafruit_PWMServoDriver *servoShield)
+Challenge::Challenge(Support *support)
 {
 
   //initialization of Simon
@@ -10,7 +10,7 @@ Challenge::Challenge(Support *support, Adafruit_PWMServoDriver *servoShield)
   photocellPin3 = 3;
 
   _support = support;
-  _servoShield = servoShield;
+  //_servoShield = servoShield;
   int maxMinValues[] = {
     230,310,230,310,230,310,370,480,100,600  };
   pointerToMaxMinValues = maxMinValues;
@@ -24,9 +24,10 @@ This function will twist the Rubik's cube. The # of steps is half of
 bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
 {
 
-  _support->Arm(200,false); //lower arm to cube
-  rubiks->step(100,FORWARD,DOUBLE); //twist 180
-  _support->Arm(200,true); //return arm to native position
+  _support->Arm(80,true); //lower arm to cube
+  rubiks->step(125,FORWARD,DOUBLE); //twist 180
+  _support->Arm(80,false); //return arm to native position
+  rubiks->step(75,FORWARD,DOUBLE); //twist 180
   rubiks->release(); //release so that we don't keep using power
   return true;
 
@@ -37,7 +38,7 @@ This function will play Etch a sketch. We pass it a pointer to the stepper motor
  */
 bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right, int steps)
 {
-  _support->Arm(200,false); //lower the arm to etch
+  _support->Arm(200,true); //lower the arm to etch
   left->step(2.75*steps, FORWARD, DOUBLE); // 2 full rotations of knob
 
   //midpoint left
@@ -78,7 +79,7 @@ bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *r
 
   left->release(); //release so we're not still drawing power. We really don't care if they remain in the same location or not.
   right->release();
-  _support->Arm(200,true); //return arm to native position
+  _support->Arm(200,false); //return arm to native position
 
   return true;
 
@@ -101,7 +102,7 @@ bool Challenge::Simon()
   boolean start = false;
   int oldCounter = 0;
 
-  _support->Arm(200,false); //lower arm to Simon
+  _support->Arm(100,true); //lower arm to Simon
   startSimon(pinHolding,4);
   unsigned long time = millis(); //get current time processor has been running
   while((millis()-time)<=(unsigned long)(15*1000)) //if current time minus our beginning time stamp is less than 15 seconds
@@ -127,7 +128,7 @@ bool Challenge::Simon()
       start = false;
     }
   }
-  _support->Arm(200,true); //return arm to native position
+  _support->Arm(100,false); //return arm to native position
   return true;
 
 }
@@ -178,7 +179,7 @@ void Challenge::actuateServo(int servoNum)
    yellow - 3
    center - 4
    */
-  
+  /*
   //Fetches servos min and max from maxMinValues array.
   int SERVOMIN = *(pointerToMaxMinValues+servoNum*2);;
   int SERVOMAX = *(pointerToMaxMinValues+servoNum*2+1);
@@ -194,6 +195,7 @@ void Challenge::actuateServo(int servoNum)
   {
     _servoShield->setPWM(servoNum, 0, pulselen);
   }
+  */
 }
 
 /*
@@ -219,6 +221,7 @@ void Challenge::startSimon(int pinHolding[], int length)
 //Need to add a 5th servo for center servo which has not been installed yet (kurt)
 void Challenge::initializeServo() 
 {
+  /*
   for(int z = 5; z >=0; z--) 
   {
     int minVals = *(pointerToMaxMinValues+z*2);
@@ -228,6 +231,7 @@ void Challenge::initializeServo()
       _servoShield->setPWM(z, 0, pulselen);
     }
   }
+  */
 }
 
 

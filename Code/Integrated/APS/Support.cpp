@@ -15,9 +15,9 @@ Support::Support(Adafruit_StepperMotor *pointerToArm, Adafruit_DCMotor *pointerT
 
 //function to move arm. Takes in number of steps and a boolean for up or down.
 //A true corresponds to an upward movement, false is down
-bool Support::Arm(int steps, bool up)
+bool Support::Arm(int steps, bool down)
 {
-  if(up)
+  if(down)
   {
   arm->step(steps,FORWARD,DOUBLE);
   }
@@ -108,8 +108,8 @@ void Support::BackForward(int dist) //move the system forward or backward
   
   if(dist>0) //forward
   {
-    leftMotor->run(FORWARD); 
-    rightMotor->run(BACKWARD);
+    leftMotor->run(BACKWARD); 
+    rightMotor->run(FORWARD);
   }
   else //backward
   {
@@ -117,7 +117,8 @@ void Support::BackForward(int dist) //move the system forward or backward
     rightMotor->run(BACKWARD);
   }
 
-  backMotor->setSpeed(40);
+  leftMotor->setSpeed(100);
+  rightMotor->setSpeed(100);
   
   //while our encoder position is less than our distance we need to move
   while(abs((float)encoderPos)<abs(dist))

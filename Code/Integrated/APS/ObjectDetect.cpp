@@ -13,13 +13,12 @@ ObjectDetect::ObjectDetect(Support *support)
 bool ObjectDetect::Approach(NewPing sonar)
 {
   float uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-  //Serial.println((float)(uS / US_ROUNDTRIP_CM));
+  Serial.println((float)(uS / US_ROUNDTRIP_CM));
   while (!(((float)(uS / US_ROUNDTRIP_CM) >= 6.2 && (float)(uS / US_ROUNDTRIP_CM) <= 6.6)))
   {
-    delay(50);
     _support->Creep();
     uS = sonar.ping();
-    //Serial.println((float)(uS / US_ROUNDTRIP_CM));
+    Serial.println((float)(uS / US_ROUNDTRIP_CM));
   }
 
   return true;
