@@ -21,7 +21,7 @@ NewPing sonar(trg, echo, MAX_DISTANCE);
 Adafruit_MotorShield Etch = Adafruit_MotorShield(0x60);
 Adafruit_MotorShield Rubiks = Adafruit_MotorShield(0x61);
 Adafruit_MotorShield Move = Adafruit_MotorShield(0x62);
-//Adafruit_PWMServoDriver servoShield = Adafruit_PWMServoDriver();
+Adafruit_PWMServoDriver servoShield = Adafruit_PWMServoDriver();
 const int etchSteps = 48; //configure based upon steppers used
 const int PWMFreq = 60; //Micro Servos operate at 60 Hz (Checked by Kurt)
 int obj = 0;
@@ -67,19 +67,19 @@ Adafruit_DCMotor *rightMotor = Move.getMotor(3); //motor port #3 (M3) DC motor t
  3   |   52    |   53
  
  */
-int encoderPins[] = {
-  48,49,50,51,52,53};
+int encoderPins[] = {48,49,50,51,52,53};
 
+int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
 
 Support support(arm, leftMotor, backMotor, rightMotor, encoderPins); 
-Challenge Cha(&support);
+Challenge Cha(&support, &servoShield, maxMinValues);
 ObjectDetect ObjDet(&support);
 
 void setup() {
 
   Serial.begin(9600);
-  //servoShield.begin();
-  //servoShield.setPWMFreq(PWMFreq);
+  servoShield.begin();
+  servoShield.setPWMFreq(PWMFreq);
   Etch.begin();
   Rubiks.begin();
   Move.begin();
@@ -141,8 +141,9 @@ void loop()
       break;
     }
   }
-  
+
 }
+
 
 
 

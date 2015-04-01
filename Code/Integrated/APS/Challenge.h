@@ -6,19 +6,21 @@
 #include <Average.h>
 #include <Servo.h>
 #include <Adafruit_MotorShield.h>
+#include <Wire.h>
+
 
 
 class Challenge
 {
   public:
-    Challenge(Support *support);
+    Challenge(Support *support, Adafruit_PWMServoDriver *servoShield, int maxMinValues[]);
     bool Rubiks(Adafruit_StepperMotor *rubiks);
     bool Etch(Adafruit_StepperMotor *left, Adafruit_StepperMotor *right, int steps);
     bool Simon();
     bool Card();
   private:
     Support *_support; //pointer to support object. Will be set in constructor
-    //Adafruit_PWMServoDriver *_servoShield;
+    Adafruit_PWMServoDriver *_servoShield;
     //begin methods for Simon
     void Play(QueueArray <int> *colorSequence);
     void actuateServo(int servoNum);
@@ -39,15 +41,8 @@ class Challenge
     int photocellPin1;
     int photocellPin2;
     int photocellPin3;
-
-    Servo servoCenter; //servos for simon
-    Servo servoRed;
-    Servo servoBlue;
-    Servo servoYellow;
-    Servo servoGreen;
-
-    int PRESS_ANGLE;
-    int REST_ANGLE;
+    
+    int *_maxMinValues;
     //end variables for Simon
 
 };

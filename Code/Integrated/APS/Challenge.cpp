@@ -1,6 +1,6 @@
 #include "Challenge.h"
 
-Challenge::Challenge(Support *support)
+Challenge::Challenge(Support *support, Adafruit_PWMServoDriver *servoShield, int maxMinValues[])
 {
 
   //initialization of Simon
@@ -10,10 +10,9 @@ Challenge::Challenge(Support *support)
   photocellPin3 = 3;
 
   _support = support;
-  //_servoShield = servoShield;
-  int maxMinValues[] = {
-    230,310,230,310,230,310,370,480,100,600  };
-  pointerToMaxMinValues = maxMinValues;
+  _servoShield = servoShield;
+  _maxMinValues = maxMinValues;
+
 }
 
 /*
@@ -97,8 +96,7 @@ bool Challenge::Simon()
   int pinHolding[] = {
     photocellPin, photocellPin1, photocellPin2, photocellPin3
   }; 
-  int maxMinValues[] = {
-    230,310,230,310,230,310,370,480,100,600  };
+
   boolean start = false;
   int oldCounter = 0;
 
@@ -168,9 +166,9 @@ void Challenge::actuateServo(int servoNum)
 {
   /*
     Current simon says interrector : Version 1 (2 by 4 and hammer version)
-    All 4 Micro servos have been tested. Center servo is not mounted and still
-    missing Max/Min (Kurt, March 29)
-
+   All 4 Micro servos have been tested. Center servo is not mounted and still
+   missing Max/Min (Kurt, March 29)
+   
    use this function to actuate the servo.
    servo numbering scheme:
    blue - 0
@@ -179,10 +177,10 @@ void Challenge::actuateServo(int servoNum)
    yellow - 3
    center - 4
    */
-  /*
+
   //Fetches servos min and max from maxMinValues array.
-  int SERVOMIN = *(pointerToMaxMinValues+servoNum*2);;
-  int SERVOMAX = *(pointerToMaxMinValues+servoNum*2+1);
+  int SERVOMIN = *(_maxMinValues+servoNum*2);
+  int SERVOMAX = *(_maxMinValues+servoNum*2+1);
 
   //Bring push rod back up to starting posistion.
   for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) 
@@ -195,7 +193,7 @@ void Challenge::actuateServo(int servoNum)
   {
     _servoShield->setPWM(servoNum, 0, pulselen);
   }
-  */
+
 }
 
 /*
@@ -221,18 +219,19 @@ void Challenge::startSimon(int pinHolding[], int length)
 //Need to add a 5th servo for center servo which has not been installed yet (kurt)
 void Challenge::initializeServo() 
 {
-  /*
+
   for(int z = 5; z >=0; z--) 
   {
-    int minVals = *(pointerToMaxMinValues+z*2);
-    int maxVals = *(pointerToMaxMinValues+z*2+1);
+    int minVals = *(_maxMinValues+z*2);
+    int maxVals = *(_maxMinValues+z*2+1);
     for (uint16_t pulselen = minVals; pulselen < maxVals; pulselen++) 
     {
       _servoShield->setPWM(z, 0, pulselen);
     }
   }
-  */
+
 }
+
 
 
 
