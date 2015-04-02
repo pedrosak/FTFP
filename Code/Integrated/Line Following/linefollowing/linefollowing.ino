@@ -77,7 +77,7 @@ void loop()
 
   int error = position - 3500;
   
-  int output = ((1.0)*error) + (100*(error - lastError);
+  int output = ((1.0)*error) + (100*(error - lastError));
   lastError = error;
   
   move(output);
