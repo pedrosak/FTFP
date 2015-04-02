@@ -11,7 +11,7 @@
 //Definitions
 #define NUMBER_OF_SENSORS 8                    //Number of Sensors being used
 #define TIMEOUT           2500                 //2500 microseconds for sensor output to go low
-#define EMITTER_PIN       2                    //LEDON pin. Always one, turn off to save power
+#define EMITTER_PIN       30                    //LEDON pin. Always one, turn off to save power
 
 
 //Create motoshield object
@@ -33,6 +33,10 @@ Adafruit_DCMotor *backMotor = motorShield.getMotor(2);
 unsigned int sensorValues[NUMBER_OF_SENSORS];
 int lastError = 0;
 unsigned int position ;
+int lastOutput = 0;
+int output = 0;
+int error = 0;
+int pidOutput = 0;
 void setup()
 {
 
@@ -74,21 +78,20 @@ void loop()
 {
   
   position = sensors.readLine(sensorValues);
-
-  int error = position - 3500;
-  
-  int output = ((1.0)*error) + (100*(error - lastError));
+  error = position - 3715;
+  pidOutput = ((0.1)*error) + (1.1*(error - lastError));
+  output = pidOutput + output;
   lastError = error;
   
   move(output);
   
-  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
-  {
-   Serial.print(sensorValues[i]);
-  Serial.print("\t"); 
-    
-  }
-Serial.println(position);
+//  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+//  {
+//     Serial.print(sensorValues[i]);
+//     Serial.print("\t");  
+//  }
+//  
+//  Serial.println(position);
 }
 
 
@@ -96,10 +99,11 @@ Serial.println(position);
 //Motor movement fucntion
 int move(int output)
 {
+  leftMotor->setSpeed(10 + abs(output));
+  rightMotor->setSpeed(10 -abs(output));
   leftMotor->run(BACKWARD);
   rightMotor->run(FORWARD);
-  leftMotor->setSpeed(80 + abs(output));
-  rightMotor->setSpeed(80 -abs(output));
+  Serial.println(output);
 }
 
 void shuffle(int dist) //move system left or right
