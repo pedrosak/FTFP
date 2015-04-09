@@ -37,6 +37,7 @@ int lastOutput = 0;
 int output = 0;
 int error = 0;
 int pidOutput = 0;
+
 void setup()
 {
 
@@ -78,20 +79,20 @@ void loop()
 {
   
   position = sensors.readLine(sensorValues);
-  error = position - 3715;
-  pidOutput = ((0.1)*error) + (1.1*(error - lastError));
+  error = position - 3360;
+  pidOutput = ((0.1)*error) + (0.8*(error - lastError));
   output = pidOutput + output;
   lastError = error;
   
   move(output);
   
-//  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
-//  {
-//     Serial.print(sensorValues[i]);
-//     Serial.print("\t");  
-//  }
-//  
-//  Serial.println(position);
+ // for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+ // {
+ //    Serial.print(sensorValues[i]);
+ //    Serial.print("\t");  
+ // }
+ 
+ // Serial.println(position);
 }
 
 
@@ -99,9 +100,9 @@ void loop()
 //Motor movement fucntion
 int move(int output)
 {
-  leftMotor->setSpeed(10 + abs(output));
-  rightMotor->setSpeed(10 -abs(output));
-  leftMotor->run(BACKWARD);
+  leftMotor->setSpeed(5+ abs(output));
+  rightMotor->setSpeed(5 -abs(output));
+  leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
   Serial.println(output);
 }

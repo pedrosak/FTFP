@@ -71,15 +71,13 @@ void setup()
 /////////////////////////////////////////////////////////////////////////////////
 
   motorShield.begin();                         //Default frequency of 1.6KHz
- // leftMotor->setSpeed(50);                    //Speed of the left motor -- 0 (stopped) - 255 (full speed)
- // rightMotor->setSpeed(50);                   //Speed of the left motor -- 0 (stopped) - 255 (full speed)
   leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
   
   //PID
   setPoint = 2343;                             //Sensor posistion when sensor 4 and sensor 3 are on the line.
   lineFollowingPID.SetMode(AUTOMATIC);
-  lineFollowingPID.SetOutputLimits(-900, 900);
+  lineFollowingPID.SetOutputLimits(-255, 255);
   lineFollowingPID.SetSampleTime(10);
 }
 void loop()
