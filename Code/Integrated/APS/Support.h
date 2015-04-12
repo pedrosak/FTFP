@@ -3,6 +3,7 @@
 #endif // Support_h
 #include <Adafruit_MotorShield.h>
 #include <Wire.h>
+#include <QTRSensors.h>
 
 //this class is intended to be used for support functions (i.e. moving the arm, line follow)
 //functions that have no home otherwise.
@@ -10,7 +11,7 @@
 class Support
 {
 public:
-   Support(Adafruit_StepperMotor *pointerToArm, Adafruit_DCMotor *leftMotor, Adafruit_DCMotor *backMotor, Adafruit_DCMotor *rightMotor, int *encoderPins);
+   Support(Adafruit_StepperMotor *pointerToArm, Adafruit_DCMotor *leftMotor, Adafruit_DCMotor *backMotor, Adafruit_DCMotor *rightMotor, int *encoderPins, QTRSensorsRC *sensors, unsigned int sensorVals[]);
    bool Arm(int steps, bool up);
    void Follow();
    bool StartUp();
@@ -24,5 +25,8 @@ private:
   Adafruit_DCMotor *backMotor; //pointer to the back drive motor. Will be set in the constructor
   Adafruit_DCMotor *rightMotor; //pointer to the right drive motor. Will be set in the constructor
   int *encoderPins; //array of pins that correspond to encoders to each motor
+  int move(int output); //motor movement function
+  QTRSensorsRC *sensors; //pointer to the sensor object. Will be set in the constructor
+  unsigned int* sensorValues;
 
 };

@@ -5,22 +5,23 @@
 #include <Average.h>
 #include <Servo.h>
 #include <Wire.h>
+#include <QTRSensors.h>                        //sensor array Polulo library
 #define MAX_DISTANCE 200
-#define rubixStrafeFromCenter 3.25
 #define ENC_PER_INCH 0.00806452 //how many inches are in one turn of the encoder  
-
+#define NUMBER_OF_SENSORS 8                    //Number of Sensors being used
+#define TIMEOUT           2500                 //2500 microseconds for sensor output to go low
+#define EMITTER_PIN       30                    //LEDON pin. Always one, turn off to save power
 
 int echo = 7;
 int trg = 8;
 bool started = false;
+unsigned int sensorValues[NUMBER_OF_SENSORS];
 
 NewPing sonar(trg, echo, MAX_DISTANCE);
-
-
-
 Adafruit_MotorShield Etch = Adafruit_MotorShield(0x60);
 Adafruit_MotorShield Rubiks = Adafruit_MotorShield(0x61);
 Adafruit_MotorShield Move = Adafruit_MotorShield(0x62);
+QTRSensorsRC sensors((unsigned char[]) {22, 23, 24, 25, 26, 27,28,29}, NUMBER_OF_SENSORS, TIMEOUT, EMITTER_PIN);
 Adafruit_PWMServoDriver servoShield = Adafruit_PWMServoDriver();
 const int etchSteps = 48; //configure based upon steppers used
 const int PWMFreq = 60; //Micro Servos operate at 60 Hz (Checked by Kurt)
@@ -71,7 +72,7 @@ int encoderPins[] = {48,49,50,51,52,53};
 
 int maxMinValues[] = {230,310,230,310,230,310,370,480,100,600};
 
-Support support(arm, leftMotor, backMotor, rightMotor, encoderPins); 
+Support support(arm, leftMotor, backMotor, rightMotor, encoderPins,&sensors,sensorValues); 
 Challenge Cha(&support, &servoShield, maxMinValues);
 ObjectDetect ObjDet(&support);
 
@@ -92,6 +93,30 @@ void setup() {
   {
     pinMode(encoderPins[i], INPUT); 
   }
+    bool dir = true;
+  backMotor->setSpeed(60);
+  
+  for (int i = 1; i <=400; i++)
+  {
+    
+   if(!(i%50))
+   { //multiples of 100
+
+     dir = !dir;
+   }
+
+   if(dir)
+   {
+   backMotor->run(FORWARD);
+   }
+   else
+   {
+   backMotor->run(BACKWARD);  
+   }
+   sensors.calibrate();                        //Reads all sensors 10 times for the TIMEOUT time (if TIMEOUT = 2500 microseconds then 25 ms per call)
+  }
+
+  backMotor->run(RELEASE);
 
 }
 
