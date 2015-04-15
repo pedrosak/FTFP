@@ -209,7 +209,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 			rIdx.push_back(i);
 			continue;
 		}
-		if((area[i]>90000)&&(area[i]<110000))
+		if((area[i]>80000)&&(area[i]<110000))
 		{
 			s++;
 			sIdx.push_back(i);
