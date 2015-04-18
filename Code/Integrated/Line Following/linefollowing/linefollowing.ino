@@ -7,6 +7,8 @@
 #include <Adafruit_MotorShield.h>              //Adafruit motoshield library
 #include "utility/Adafruit_PWMServoDriver.h"   //Required for motorshield use
 #include <PID_v1.h>                            //PID library (www.playground.arduino.cc/Code/PIDLibrary)
+#include "mapping.h"
+#include <Encoder.h>
 
 //Definitions
 #define NUMBER_OF_SENSORS 8                    //Number of Sensors being used
@@ -37,6 +39,8 @@ int lastOutput = 0;
 int output = 0;
 int error = 0;
 int diff = 0;
+unsigned int sensorCutoff = 2000;
+Encoder encoderRight(2,3);
 
 void setup()
 {
@@ -79,13 +83,18 @@ void loop()
 {
   
   position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
+
+  if((sensorValues[0] < sensorCutoff && sensorValues[1] < sensorCutoff && sensorValues[2] < sensorCutoff) || (sensorValues[7] < sensorCutoff&& sensorValues[6] < sensorCutoff && sensorValues[5] < sensorCutoff))
+  {
+    DetermineChoices(rightMotor,leftMotor,&sensors,&encoderRight);
+  }
+
   diff = (position - 3360);
   error = diff/10;
   output = ((0.1)*error) + (0*(error-lastError));
   lastError = error;
   
   move(output);
-  
 //   for(int i = 0; i<NUMBER_OF_SENSORS;i++)
 //  {
 //      Serial.print(sensorValues[i]);
@@ -93,6 +102,7 @@ void loop()
 //   }
  
 //  Serial.println(position);
+
 }
 
 
