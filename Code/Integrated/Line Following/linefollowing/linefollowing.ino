@@ -36,7 +36,7 @@ unsigned int position ;
 int lastOutput = 0;
 int output = 0;
 int error = 0;
-int pidOutput = 0;
+int diff = 0;
 
 void setup()
 {
@@ -78,33 +78,48 @@ void setup()
 void loop()
 {
   
-  position = sensors.readLine(sensorValues);
-  error = position - 3360;
-  pidOutput = ((0.1)*error) + (0.8*(error - lastError));
-  output = pidOutput + output;
+  position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
+  diff = (position - 3360);
+  error = diff/10;
+  output = ((0.1)*error) + (0*(error-lastError));
   lastError = error;
   
   move(output);
   
- // for(int i = 0; i<NUMBER_OF_SENSORS;i++)
- // {
- //    Serial.print(sensorValues[i]);
- //    Serial.print("\t");  
- // }
+//   for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+//  {
+//      Serial.print(sensorValues[i]);
+//      Serial.print("\t");  
+//   }
  
- // Serial.println(position);
+//  Serial.println(position);
 }
 
 
 
 //Motor movement fucntion
-int move(int output)
+int move(int pidSPEED)
 {
-  leftMotor->setSpeed(5+ abs(output));
-  rightMotor->setSpeed(5 -abs(output));
   leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
-  Serial.println(output);
+  if(pidSPEED < 0)
+  {
+    leftMotor->setSpeed(60 - abs(pidSPEED));
+    rightMotor->setSpeed(60 + abs(pidSPEED));
+    Serial.println("Turinging left");
+  } 
+  else if(pidSPEED > 0) 
+  {
+    leftMotor->setSpeed(60 + abs(pidSPEED));
+    rightMotor->setSpeed(60 - abs(pidSPEED));
+    Serial.println("Turinging right");
+  }
+  else if(pidSPEED == 0)
+  {
+    leftMotor->setSpeed(50);
+    rightMotor->setSpeed(50);
+    Serial.println("Going Forward");
+  }
 }
 
 void shuffle(int dist) //move system left or right

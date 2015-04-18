@@ -3,21 +3,20 @@
 //need to setup qtrrc sensor
 //need to setup encoder
 
-//line sensor variables
-unsigned int line[NUM_SENSORS]; //current line reading
+unsigned int line[8]; //current line reading
 unsigned int rightSensor[1];
 unsigned int leftSensor[1];
 unsigned int cutoff = 2450; //cutoff point between line and black
 
 //maping variables
 int curMap[10][10][2];
-boolean mappedNodes[10];
+bool mappedNodes[10];
 int currentNode = 1;
 int nextOpenNode = 2;
 int frame = 0;
-boolean mapLeft = false;
-boolean mapRight = false;
-boolean mapStraight = false;
+bool mapLeft = false;
+bool mapRight = false;
+bool mapStraight = false;
 
 //sensor flags for if they turn white
 int rFlag = 0;
@@ -33,7 +32,7 @@ int L7Flag = 0;
 
 //================================================================================
 //if the robot sees something try to determine if there is a choice available
-void DetermineChoices(){
+void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM){
 
 	//put code to move forward
 	RM->setSpeed(maxSpeed);
