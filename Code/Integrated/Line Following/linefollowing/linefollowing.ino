@@ -40,6 +40,7 @@ int output = 0;
 int error = 0;
 int diff = 0;
 unsigned int sensorCutoff = 2000;
+int flag = 0;
 Encoder encoderRight(2,3);
 
 void setup()
@@ -84,10 +85,10 @@ void loop()
   
   position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
 
-  if((sensorValues[0] < sensorCutoff && sensorValues[1] < sensorCutoff && sensorValues[2] < sensorCutoff) || (sensorValues[7] < sensorCutoff&& sensorValues[6] < sensorCutoff && sensorValues[5] < sensorCutoff))
-  {
-    DetermineChoices(rightMotor,leftMotor,&sensors,&encoderRight);
-  }
+  // if((sensorValues[0] < sensorCutoff && sensorValues[1] < sensorCutoff && sensorValues[2] < sensorCutoff) || (sensorValues[7] < sensorCutoff&& sensorValues[6] < sensorCutoff && sensorValues[5] < sensorCutoff))
+  // {
+  //   DetermineChoices(rightMotor,leftMotor,&sensors,&encoderRight);
+  // }
 
   diff = (position - 3360);
   error = diff/10;
@@ -95,13 +96,14 @@ void loop()
   lastError = error;
   
   move(output);
-//   for(int i = 0; i<NUMBER_OF_SENSORS;i++)
-//  {
-//      Serial.print(sensorValues[i]);
-//      Serial.print("\t");  
-//   }
+
+  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+ {
+     Serial.print(sensorValues[i]);
+     Serial.print("\t");  
+  }
  
-//  Serial.println(position);
+ Serial.println(position);
 
 }
 
@@ -112,24 +114,67 @@ int move(int pidSPEED)
 {
   leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
+
   if(pidSPEED < 0)
   {
     leftMotor->setSpeed(60 - abs(pidSPEED));
     rightMotor->setSpeed(60 + abs(pidSPEED));
-    Serial.println("Turinging left");
+    if(stopMove())
+    {
+      leftMotor->setSpeed(0);
+      rightMotor->setSpeed(0);
+    }
   } 
   else if(pidSPEED > 0) 
   {
     leftMotor->setSpeed(60 + abs(pidSPEED));
     rightMotor->setSpeed(60 - abs(pidSPEED));
-    Serial.println("Turinging right");
+    if(stopMove())
+    {
+      leftMotor->setSpeed(0);
+      rightMotor->setSpeed(0);
+    }
   }
   else if(pidSPEED == 0)
   {
     leftMotor->setSpeed(50);
     rightMotor->setSpeed(50);
-    Serial.println("Going Forward");
+    if(stopMove())
+    {
+      leftMotor->setSpeed(0);
+      rightMotor->setSpeed(0);
+      while(!(sensorValues[7] < 300))
+      {
+        leftMotor->setSpeed(60 + abs(pidSPEED));
+        rightMotor->setSpeed(60 - abs(pidSPEED));
+        stopMove();
+      }
+    }
   }
+  
+  // else if((sensorValues[0] < 300) && (sensorValues [1] < 300) && (sensorValues[2] < 300) && (sensorValues[3] < 300) && (flag == 1))
+  // {
+  //   flag = 0;
+  //   Serial.println(flag);
+  //   while(!(sensorValues[0] < 200))
+  //   {
+  //   leftMotor->setSpeed(60 + abs(pidSPEED));
+  //   rightMotor->setSpeed(60 - abs(pidSPEED));
+  //   }
+  // }
+}
+
+bool stopMove()
+{
+if((sensorValues[0] < 200) && (sensorValues [1] < 200) && (sensorValues[2] < 200) && (sensorValues[3] < 200) && (sensorValues[4] < 200) && (sensorValues [5] < 200) && (sensorValues[6] < 200) && (sensorValues[7] < 200))
+{
+return true;
+}
+else
+{
+  return false;
+}
+
 }
 
 void shuffle(int dist) //move system left or right

@@ -272,7 +272,8 @@ void Choose(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRight){
       if((frame + 1)%4 == curMap[currentNode][i][0] && curMap[currentNode][i][1] == 0){
         //turn left
 
-        turnLeft(RM,LM,encoderRight);
+        //turnLeft(RM,LM,encoderRight);
+        turnRight(RM,LM,encoderRight);
         frame = (frame + 1)%4;
         curMap[currentNode][i][1] = 1;
         currentNode = i;
@@ -283,7 +284,8 @@ void Choose(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRight){
       else if((frame + 3)%4 == curMap[currentNode][i][0] && curMap[currentNode][i][1] == 0){
         //turn right
 
-        turnRight(RM,LM,encoderRight);
+        //turnRight(RM,LM,encoderRight);
+        turnLeft(RM,LM,encoderRight);
         frame = (frame + 3)%4;
         curMap[currentNode][i][1] = 1;
         currentNode = i;
