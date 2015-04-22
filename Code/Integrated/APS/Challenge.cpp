@@ -38,46 +38,33 @@ This function will play Etch a sketch. We pass it a pointer to the stepper motor
 bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right, int steps)
 {
   _support->Arm(200,true); //lower the arm to etch
-  left->step(2.75*steps, FORWARD, DOUBLE); // 2 full rotations of knob
-
-  //midpoint left
-  left->step(0.5*steps, BACKWARD, DOUBLE); //go back a little for last E
-
-    //E going down
-  right->step(0.3*steps, BACKWARD, DOUBLE);
-  left->step(steps, BACKWARD, DOUBLE);
-  right->step(0.3*steps, BACKWARD, DOUBLE);
-  left->step(steps, FORWARD, DOUBLE);
-
-  //space for letter and next E
-  left->step(0.6*steps, BACKWARD, DOUBLE);
-
-  //going up second  E
-  right->step(0.3*steps, FORWARD, DOUBLE);
-  left->step(steps, FORWARD, DOUBLE);
-  right->step(0.3*steps, FORWARD, DOUBLE);
-
-  //go back down
-  right->step(0.6*steps, BACKWARD, DOUBLE);
-
-  //space for first E
-  left->step(0.6*steps, BACKWARD, DOUBLE);
-
-  //going up first E
-  right->step(0.3*steps, FORWARD, DOUBLE);
-  left->step(steps, FORWARD, DOUBLE);
-  right->step(steps, FORWARD, DOUBLE);
-
   //I
-  //space
-  left->step(0.6*steps, BACKWARD, DOUBLE);
-
-  //go up on I
-  right->step(1.2*steps, FORWARD, DOUBLE);
-  left->step(0.6*steps, BACKWARD, DOUBLE);
-
-  left->release(); //release so we're not still drawing power. We really don't care if they remain in the same location or not.
+  right->step(1.5*STEPS,BACKWARD,DOUBLE);
+  right->step(1.5*STEPS,FORWARD,DOUBLE);
   right->release();
+  
+  //3 Es
+  for(int i = 0; i<3; i++)
+  {
+    Serial.println("E");
+    left->step(0.5*STEPS,BACKWARD,DOUBLE);
+    left->release();
+    right->step(1.5*STEPS,BACKWARD,DOUBLE);
+    right->release();
+    left->step(0.5*STEPS,BACKWARD,DOUBLE);
+    left->step(0.5*STEPS,FORWARD,DOUBLE);
+    left->release();
+    right->step(0.75*STEPS,FORWARD,DOUBLE);
+    right->release();
+    left->step(0.5*STEPS,BACKWARD,DOUBLE);
+    left->step(0.5*STEPS,FORWARD,DOUBLE);
+    left->release();
+    right->step(0.75*STEPS,FORWARD,DOUBLE);
+    right->release();
+    left->step(0.5*STEPS,BACKWARD,DOUBLE);
+    left->release();
+  }
+      left->step(0.5*STEPS,BACKWARD,DOUBLE);
   _support->Arm(200,false); //return arm to native position
 
   return true;
