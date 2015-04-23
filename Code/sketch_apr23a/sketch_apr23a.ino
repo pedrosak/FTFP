@@ -2,7 +2,6 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>              //Adafruit motoshield library
 #include "utility/Adafruit_PWMServoDriver.h"   //Required for motorshield use
-#include <Encoder.h>
 #define ENC_PER_INCH 0.00806452 //how many inches are in one turn of the encoder 
 //Definitions
 #define NUMBER_OF_SENSORS 8                    //Number of Sensors being used
@@ -80,9 +79,13 @@ void setup()
 
 void loop() {
   // put your main code here, to run repeatedly:
-  BackForward((int)(21.5 / ENC_PER_INCH));
+  BackForward((int)(38 / ENC_PER_INCH));
   //turn right
-
+while(1)
+{
+ leftMotor->run(RELEASE);
+rightMotor->run(RELEASE); 
+}
   //straight
   BackForward((int)(7.5 / ENC_PER_INCH));
 
@@ -131,21 +134,21 @@ void BackForward(int dist) //move the system forward or backward
 
   if (dist > 0) //forward
   {
-    leftMotor->run(BACKWARD);
+    leftMotor->run(FORWARD);
     rightMotor->run(FORWARD);
-    encoderPinA = encoderPins[0];
-    encoderPinB = encoderPins[1];
+    encoderPinA = encoderPins[4];
+    encoderPinB = encoderPins[5];
   }
   else //backward
   {
     leftMotor->run(FORWARD);
-    rightMotor->run(BACKWARD);
+    rightMotor->run(FORWARD);
     encoderPinA = encoderPins[4];
     encoderPinB = encoderPins[5];
   }
 
-  leftMotor->setSpeed(100);
-  rightMotor->setSpeed(100);
+  leftMotor->setSpeed(70);
+  rightMotor->setSpeed(70);
 
   //while our encoder position is less than our distance we need to move
   while (abs((float)encoderPos) < abs(dist))
@@ -163,14 +166,15 @@ void BackForward(int dist) //move the system forward or backward
       }
     }
     encoderPinALast = n;
-
+    Serial.println(encoderPos);
+    /*
     position = sensors.readLine(sensorValues);
     error = position - 3360;
     pidOutput = ((0.1) * error) + (0.8 * (error - lastError));
     output = pidOutput + output;
     lastError = error;
-
-    Move(output);
+    */
+    //Move(output);
 
 
   }

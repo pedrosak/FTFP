@@ -41,7 +41,7 @@ int diff = 0;
 unsigned int sensorCutoff = 2400;
 int flag = 0;
 Encoder encoderRight(2,3);
-
+int encoderPins[] = {48, 49, 50, 51, 52, 53};
 void setup()
 {
 
@@ -83,35 +83,9 @@ void loop()
 {
   leftMotor->run(FORWARD);
   rightMotor->run(FORWARD);
-  
-  position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
-  sensors.read(sensorValues);
-   for(int i = 0; i<NUMBER_OF_SENSORS;i++)
-  {
-      Serial.print(sensorValues[i]);
-      Serial.print("\t");  
-   }
- 
-  Serial.println(position);
-
-
-  if((sensorValues[0] < sensorCutoff && sensorValues[1] < sensorCutoff && sensorValues[2] < sensorCutoff && sensorValues[3] < sensorCutoff) || (sensorValues[7] < sensorCutoff&& sensorValues[6] < sensorCutoff && sensorValues[5] < sensorCutoff && sensorValues[4] < sensorCutoff))
-  {
-
-    leftMotor->setSpeed(0);
-    rightMotor->setSpeed(0);
-    //delay(2000);
-    DetermineChoices(rightMotor,leftMotor,&sensors,&encoderRight);
-   // return;
-  }
-
-  diff = (position - 3360);
-  error = diff/10;
-  output = ((0.1)*error) + (0*(error-lastError));
-  lastError = error;
-  
-  move(output);
-
+  LineFollowForSeconds(10);
+  turnLeft();
+  delay(1000);
  //  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
  // {
  //     Serial.print(sensorValues[i]);
@@ -201,3 +175,149 @@ void shuffle(int dist) //move system left or right
   
   return;
 }
+
+
+void LineFollowForSeconds(int secs)
+{
+  
+  unsigned long time = millis(); //get current time processor has been running
+  while((millis()-time)<=(unsigned long)(secs*1000)) //if current time minus our beginning time stamp is less than 15 seconds
+ {
+  position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
+  sensors.read(sensorValues);
+  /*
+   for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+  {
+      Serial.print(sensorValues[i]);
+      Serial.print("\t");  
+   }
+ */
+  Serial.println(position);
+
+
+  diff = (position - 3360);
+  error = diff/10;
+  output = ((0.1)*error) + (0*(error-lastError));
+  lastError = error;
+  
+  move(output);
+ }
+  leftMotor->run(RELEASE);
+  rightMotor->run(RELEASE);
+  
+}
+
+void turnAround()
+{
+int encoderPos = 0;
+  int encoderPinALast = LOW;
+  int n = LOW;
+  int encoderPinA = encoderPins[4];
+  int encoderPinB = encoderPins[5];
+  leftMotor->run(FORWARD);
+  rightMotor->run(BACKWARD);
+  leftMotor->setSpeed(60);
+  rightMotor->setSpeed(120);
+
+  while (abs((float)encoderPos) < abs(900))
+  {
+    n = digitalRead(encoderPinA);
+    if ((encoderPinALast == LOW) && (n == HIGH))
+    {
+      if (digitalRead(encoderPinB) == LOW)
+      {
+        encoderPos--;
+      }
+      else
+      {
+        encoderPos++;
+      }
+    }
+    encoderPinALast = n;
+
+  }
+  leftMotor->run(RELEASE);
+  rightMotor->run(RELEASE);
+
+  return;
+
+
+
+}
+
+void turnLeft()
+{
+  int encoderPos = 0;
+  int encoderPinALast = LOW;
+  int n = LOW;
+  int encoderPinA = encoderPins[4];
+  int encoderPinB = encoderPins[5];
+
+  leftMotor->run(FORWARD);
+  rightMotor->run(BACKWARD);
+  leftMotor->setSpeed(60);
+  rightMotor->setSpeed(120);
+
+  while (abs((float)encoderPos) < abs(450))
+  {
+    n = digitalRead(encoderPinA);
+    if ((encoderPinALast == LOW) && (n == HIGH))
+    {
+      if (digitalRead(encoderPinB) == LOW)
+      {
+        encoderPos--;
+      }
+      else
+      {
+        encoderPos++;
+      }
+    }
+    encoderPinALast = n;
+
+  }
+  leftMotor->run(RELEASE);
+  rightMotor->run(RELEASE);
+
+  return;
+
+
+
+}
+
+void turnRight()
+{
+
+  int encoderPos = 0;
+  int encoderPinALast = LOW;
+  int n = LOW;
+  int encoderPinA = encoderPins[0];
+  int encoderPinB = encoderPins[1];
+
+  leftMotor->run(BACKWARD);
+  rightMotor->run(FORWARD);
+  leftMotor->setSpeed(120);
+  rightMotor->setSpeed(60);
+  while (abs((float)encoderPos) < abs(450))
+  {
+    n = digitalRead(encoderPinA);
+    if ((encoderPinALast == LOW) && (n == HIGH))
+    {
+      if (digitalRead(encoderPinB) == LOW)
+      {
+        encoderPos--;
+      }
+      else
+      {
+        encoderPos++;
+      }
+    }
+    encoderPinALast = n;
+
+  }
+  leftMotor->run(RELEASE);
+  rightMotor->run(RELEASE);
+
+  return;
+
+}
+

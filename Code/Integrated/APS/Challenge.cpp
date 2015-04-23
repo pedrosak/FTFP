@@ -35,7 +35,7 @@ bool Challenge::Rubiks(Adafruit_StepperMotor *rubiks)
 /*
 This function will play Etch a sketch. We pass it a pointer to the stepper motors it will be using
  */
-bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right, int steps)
+bool Challenge::Etch(   Adafruit_StepperMotor *left,    Adafruit_StepperMotor *right, int STEPS)
 {
   _support->Arm(200,true); //lower the arm to etch
   //I

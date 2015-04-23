@@ -93,6 +93,7 @@ void setup() {
   {
     pinMode(encoderPins[i], INPUT); 
   }
+  /*
     bool dir = true;
   backMotor->setSpeed(60);
   
@@ -117,12 +118,15 @@ void setup() {
   }
 
   backMotor->run(RELEASE);
-
+*/
 }
 
 void loop()
 {
 
+  Cha.Etch(left, right, etchSteps);
+  
+  /*
   if(!started)
   {
     support.StartUp();
@@ -169,7 +173,7 @@ void loop()
       break;
     }
   }
-
+*/
 }
 
 
