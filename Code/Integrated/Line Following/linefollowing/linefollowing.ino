@@ -6,7 +6,6 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>              //Adafruit motoshield library
 #include "utility/Adafruit_PWMServoDriver.h"   //Required for motorshield use
-#include <PID_v1.h>                            //PID library (www.playground.arduino.cc/Code/PIDLibrary)
 #include "mapping.h"
 #include <Encoder.h>
 

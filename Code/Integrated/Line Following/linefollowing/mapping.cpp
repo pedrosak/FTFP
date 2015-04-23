@@ -357,12 +357,12 @@ void turnLeft(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRight)
 
   LM->run(BACKWARD);
   RM->run(FORWARD);
-  LM->setSpeed(60);
+  LM->setSpeed(120);
   RM->setSpeed(60);
 
   encoderRight->write(0);
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <2000){
+  while (abs(encoderRight->read()) <1500){
     delay(1);
   }
 }
@@ -373,11 +373,11 @@ void turnRight(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRight
   LM->run(FORWARD);
   RM->run(BACKWARD);
   LM->setSpeed(60);
-  RM->setSpeed(60);
+  RM->setSpeed(120);
 
   encoderRight->write(0);
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <2000){
+  while (abs(encoderRight->read()) <1500){
     delay(1);
   }
 
@@ -392,7 +392,7 @@ void turnAround(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRigh
   RM->setSpeed(60);
   encoderRight->write(0);
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <4000){
+  while (abs(encoderRight->read()) <3000){
     delay(1);
   }
 }
