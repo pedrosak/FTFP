@@ -4,8 +4,6 @@
 //need to setup encoder
 #include "mapping.h"
 unsigned int line[8]; //current line reading
-unsigned int rightSensor[1];
-unsigned int leftSensor[1];
 unsigned int cutoff = 2000; //cutoff point between line and black
 
 //maping variables
@@ -17,10 +15,7 @@ int frame = 0;
 bool mapLeft = false;
 bool mapRight = false;
 bool mapStraight = false;
-
 //sensor flags for if they turn white
-int rFlag = 0;
-int lFlag = 0;
 int L0Flag = 0;
 int L1Flag = 0;
 int L2Flag = 0;
@@ -40,21 +35,13 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
 
   LM->setSpeed(50);
   LM->run(FORWARD);
-
+Serial.println("In determine choices");
   encoderRight->write(0);
+  Serial.println("After encoder right");
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <200){
+  while (abs(encoderRight->read()) <1200){
     qtrrc->read(line);
-
-    //if right side sensor sees white raise flag
-    if(rightSensor[0] < cutoff){
-      rFlag = 1;
-    }
-
-    //if left side sensor sees white raise flag
-    if(leftSensor[0] < cutoff){
-      lFlag = 1;
-    }
+    Serial.println(abs(encoderRight->read()));
 
     //if sensor 0 sees white raise flag
     if(line[0] < cutoff){
@@ -103,10 +90,8 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
   qtrrc->read(line);
 
   //if everything lit up, and is now all white stop
-  if(rFlag == 1 && lFlag == 1 && L0Flag == 1 && L1Flag == 1 && L2Flag == 1 && L3Flag == 1 && L4Flag == 1 && L5Flag == 1 && L6Flag == 1 && L7Flag == 1 && line[0] < cutoff && line[1] < cutoff && line[7] < cutoff && line[6] < cutoff){
+  if(L0Flag == 1 && L1Flag == 1 && L2Flag == 1 && L3Flag == 1 && L4Flag == 1 && L5Flag == 1 && L6Flag == 1 && L7Flag == 1 && line[0] < cutoff && line[1] < cutoff && line[7] < cutoff && line[6] < cutoff){
     Choose(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -119,14 +104,12 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
   }
 
   //if everything lit up, and is now white in middle map 4 way intersection
-  if(rFlag == 1 && lFlag == 1 && L0Flag == 1 && L1Flag == 1 && L2Flag == 1 && L3Flag == 1 && L4Flag == 1 && L5Flag == 1 && L6Flag == 1 && L7Flag == 1 && line[3] < cutoff && line[4] < cutoff){
+  if(L0Flag == 1 && L1Flag == 1 && L2Flag == 1 && L3Flag == 1 && L4Flag == 1 && L5Flag == 1 && L6Flag == 1 && L7Flag == 1 && line[3] < cutoff && line[4] < cutoff){
     mapRight = true;
     mapLeft = true;
     mapStraight = true;
     mapping();
     Choose(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -139,13 +122,11 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
   }
 
   //if everything lit up, and is all black map left and right
-  if(rFlag == 1 && lFlag == 1 && L0Flag == 1 && L1Flag == 1 && L2Flag == 1 && L3Flag == 1 && L4Flag == 1 && L5Flag == 1 && L6Flag == 1 && L7Flag == 1 && line[3] > cutoff && line[4] > cutoff){
+  if(L0Flag == 1 && L1Flag == 1 && L2Flag == 1 && L3Flag == 1 && L4Flag == 1 && L5Flag == 1 && L6Flag == 1 && L7Flag == 1 && line[3] > cutoff && line[4] > cutoff){
     mapRight = true;
     mapLeft = true;
     mapping();
     Choose(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -158,13 +139,11 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
   }
 
   //if right lit up and middle is lit up map straight and right
-  if(line[3] < 1000 && line[4] < 1000 && rFlag == 1 && L0Flag == 1 && L1Flag == 1){
+  if(line[3] < 1000 && line[4] < 1000 && L0Flag == 1 && L1Flag == 1){
     mapRight = true;
     mapStraight = true;
     mapping();
     Choose(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -177,13 +156,11 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
   }
 
   //if left lit up and middle is lit up map left
-  if(line[3] < 1000 && line[4] < 1000 && lFlag == 1 && L6Flag == 1 && L7Flag == 1){
+  if(line[3] < 1000 && line[4] < 1000 && L6Flag == 1 && L7Flag == 1){
     mapLeft = true;
     mapStraight = true;
     mapping();
     Choose(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -196,10 +173,8 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
   }
 
   //if right only lit up turn right
-  if(rFlag == 1 && L0Flag == 1 && L1Flag == 1){
+  if(L0Flag == 1 && L1Flag == 1){
     turnRight(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -211,10 +186,8 @@ void DetermineChoices(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, QTRSensorsRC* 
     return;
   }
   //if left only lit up turn left
-  if(lFlag == 1 && L6Flag == 1 && L7Flag == 1){
+  if(L6Flag == 1 && L7Flag == 1){
     turnLeft(RM,LM,encoderRight);
-    rFlag = 0;
-    lFlag = 0;
     L0Flag = 0;
     L1Flag = 0;
     L2Flag = 0;
@@ -389,7 +362,7 @@ void turnLeft(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRight)
 
   encoderRight->write(0);
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <900){
+  while (abs(encoderRight->read()) <2000){
     delay(1);
   }
 }
@@ -404,7 +377,7 @@ void turnRight(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRight
 
   encoderRight->write(0);
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <900){
+  while (abs(encoderRight->read()) <2000){
     delay(1);
   }
 
@@ -419,7 +392,7 @@ void turnAround(Adafruit_DCMotor *RM, Adafruit_DCMotor *LM, Encoder *encoderRigh
   RM->setSpeed(60);
   encoderRight->write(0);
   //move forwards 200 steps and constantly read
-  while (abs(encoderRight->read()) <1800){
+  while (abs(encoderRight->read()) <4000){
     delay(1);
   }
 }

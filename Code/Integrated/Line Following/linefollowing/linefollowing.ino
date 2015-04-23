@@ -39,7 +39,7 @@ int lastOutput = 0;
 int output = 0;
 int error = 0;
 int diff = 0;
-unsigned int sensorCutoff = 2000;
+unsigned int sensorCutoff = 2400;
 int flag = 0;
 Encoder encoderRight(2,3);
 
@@ -60,7 +60,7 @@ void setup()
   for (int i = 1; i <=400; i++)
   {
     
-   if(!(i%50))
+   if(!(i%30))
    { //multiples of 100
 
      dir = !dir;
@@ -82,13 +82,29 @@ void setup()
 }
 void loop()
 {
+  leftMotor->run(FORWARD);
+  rightMotor->run(FORWARD);
   
   position = sensors.readLine(sensorValues, QTR_EMITTERS_ON, true);
+  sensors.read(sensorValues);
+   for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+  {
+      Serial.print(sensorValues[i]);
+      Serial.print("\t");  
+   }
+ 
+  Serial.println(position);
 
-  // if((sensorValues[0] < sensorCutoff && sensorValues[1] < sensorCutoff && sensorValues[2] < sensorCutoff) || (sensorValues[7] < sensorCutoff&& sensorValues[6] < sensorCutoff && sensorValues[5] < sensorCutoff))
-  // {
-  //   DetermineChoices(rightMotor,leftMotor,&sensors,&encoderRight);
-  // }
+
+  if((sensorValues[0] < sensorCutoff && sensorValues[1] < sensorCutoff && sensorValues[2] < sensorCutoff && sensorValues[3] < sensorCutoff) || (sensorValues[7] < sensorCutoff&& sensorValues[6] < sensorCutoff && sensorValues[5] < sensorCutoff && sensorValues[4] < sensorCutoff))
+  {
+
+    leftMotor->setSpeed(0);
+    rightMotor->setSpeed(0);
+    //delay(2000);
+    DetermineChoices(rightMotor,leftMotor,&sensors,&encoderRight);
+   // return;
+  }
 
   diff = (position - 3360);
   error = diff/10;
@@ -97,13 +113,13 @@ void loop()
   
   move(output);
 
-  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
- {
-     Serial.print(sensorValues[i]);
-     Serial.print("\t");  
-  }
+ //  for(int i = 0; i<NUMBER_OF_SENSORS;i++)
+ // {
+ //     Serial.print(sensorValues[i]);
+ //     Serial.print("\t");  
+ //  }
  
- Serial.println(position);
+ // Serial.println(position);
 
 }
 
@@ -119,49 +135,17 @@ int move(int pidSPEED)
   {
     leftMotor->setSpeed(60 - abs(pidSPEED));
     rightMotor->setSpeed(60 + abs(pidSPEED));
-    if(stopMove())
-    {
-      leftMotor->setSpeed(0);
-      rightMotor->setSpeed(0);
-    }
   } 
   else if(pidSPEED > 0) 
   {
     leftMotor->setSpeed(60 + abs(pidSPEED));
     rightMotor->setSpeed(60 - abs(pidSPEED));
-    if(stopMove())
-    {
-      leftMotor->setSpeed(0);
-      rightMotor->setSpeed(0);
-    }
   }
   else if(pidSPEED == 0)
   {
     leftMotor->setSpeed(50);
     rightMotor->setSpeed(50);
-    if(stopMove())
-    {
-      leftMotor->setSpeed(0);
-      rightMotor->setSpeed(0);
-      while(!(sensorValues[7] < 300))
-      {
-        leftMotor->setSpeed(60 + abs(pidSPEED));
-        rightMotor->setSpeed(60 - abs(pidSPEED));
-        stopMove();
-      }
-    }
   }
-  
-  // else if((sensorValues[0] < 300) && (sensorValues [1] < 300) && (sensorValues[2] < 300) && (sensorValues[3] < 300) && (flag == 1))
-  // {
-  //   flag = 0;
-  //   Serial.println(flag);
-  //   while(!(sensorValues[0] < 200))
-  //   {
-  //   leftMotor->setSpeed(60 + abs(pidSPEED));
-  //   rightMotor->setSpeed(60 - abs(pidSPEED));
-  //   }
-  // }
 }
 
 bool stopMove()
