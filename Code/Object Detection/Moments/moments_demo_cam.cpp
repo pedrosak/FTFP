@@ -1,10 +1,4 @@
-/**
- * @function moments_demo.cpp
- * @brief Demo code to calculate moments
- * @author OpenCV team
- */
-
-#define IN_PER_PIXEL 0.0078125
+#define IN_PER_PIXEL 0.0078125 // the number of inches in the FOV of the camera divided by the number of pixels horizontally
 #define ENC_PER_INCH 0.00806452 //how many inches are in one turn of the encoder  
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -23,6 +17,7 @@
 using namespace cv;
 using namespace std;
 
+//global variables
 Point2f midPoint;
 Mat src; Mat src_gray;
 int thresh = 20;
@@ -35,32 +30,24 @@ int iEtch = 0;
 int threshHold = 10000;
 VideoCapture capture;
 FILE *file;
-char ardFlag;
 int USB;
 struct termios tty;
 struct termios tty_old;
 struct termios cam_tty;
-
-/// Function header
-void junction();
+//function headers
 void capImage();
 void thresh_callback(int, void*);
 vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* etch, int* simon);
 void printObject(vector<int> needDrawing, vector<Point2f> mc);
 void printShuffle(float Diff);
 
-/**
- * @function main
- */
 int main(int, char** argv)
 {
-	/// Load source image and convert it to gray
-	//src = imread( argv[1], 1 );
-
+	//variables for signaling what object we saw
 	rubiks = &iRubiks;
 	simon = &iSimon;
 	etch = &iEtch;
-	ardFlag = 'F';
+
 	USB = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
 	memset(&tty, 0, sizeof tty);
 	tty_old = tty;
@@ -92,66 +79,39 @@ int main(int, char** argv)
 		{
 			read(USB, &buf, 1);
 
-		} while (buf != 'C');
-		//response.append( &buf );
+		} while (buf != 'C');//while we haven't read a C from the serial line
+
 		cout << "Camera on!: " << buf << endl;
 		tcflush(USB, TCIFLUSH);
 		if(buf == 'C')
 			capImage();
-		else if(buf == 'J')
-			junction();
-	}
-
-}
-
-void junction()
-{
-
-	capture.open(-1);
-	char cam_buf = '\0';
-	cout << "Capturing image" << endl;
-	if (!capture.isOpened()) { printf("--(!)Error opening video capture\n"); return; }
-	while (capture.read(src))
-	{
-
-		if (src.empty())
-		{
-			printf(" --(!) No captured frame -- Break!");
-			return;
-		}
-
-		//code to detect junction goes here.	
-
 	}
 
 }
 
 void capImage()
 {
-	capture.open(-1);
+	capture.open(-1);//open up USB on port (-1)
 	char cam_buf = '\0';
 	cout << "Capturing image" << endl;
 	if (!capture.isOpened()) { printf("--(!)Error opening video capture\n"); return; }
-	while (capture.read(src))
+	while (capture.read(src)) //while we are getting valid readings form the camera
 	{
 
-
-		//-- 3. Apply the classifier to the frame
-		if (src.empty())
+		if (src.empty()) //if we did not capture anything
 		{
 			printf(" --(!) No captured frame -- Break!");
 			return;
 		}
 		/// Convert image to gray and blur it
 		Size s = src.size();
-		//cout<<s<<endl;
 		midPoint = Point2f(static_cast<float>(s.width / 2.0), static_cast<float>(s.height / 2.0));
 		cvtColor(src, src_gray, COLOR_BGR2GRAY);
 		blur(src_gray, src_gray, Size(3, 3));
 
 		thresh_callback(0, 0);
-		read(USB, &cam_buf, 1);
-		if (cam_buf == 'C')
+		read(USB, &cam_buf, 1); //check to see if we've been signaled to turn off
+		if (cam_buf == 'C') 
 		{
 			cout << "Camera off!: " << cam_buf << endl;
 			return;
@@ -162,8 +122,6 @@ void capImage()
 
 void thresh_callback(int, void*)
 {
-
-	//cout<<"Calling thresh"<<endl;
 	Mat canny_output;
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
@@ -175,35 +133,16 @@ void thresh_callback(int, void*)
 	/// Get the moments
 	vector<Moments> mu(contours.size());
 	vector<double> area(contours.size());
-	vector<double> arcs(contours.size());
-
-	//vector<double> areaSorted(contours.size());
-	//vector<double> arcSorted(contours.size());
 
 	for (size_t i = 0; i < contours.size(); i++)
 	{
 		mu[i] = moments(contours[i], false);
 		area[i] = contourArea(contours[i]);
-		arcs[i] = arcLength( contours[i], true );
 	}
 
-	//areaSorted=area;
-	//arcSorted = arcs;
-	//sort(arcSorted.begin(),arcSorted.end());
-	//reverse(arcSorted.begin(),arcSorted.end());
-	//sort(areaSorted.begin(),areaSorted.end());
-	//reverse(areaSorted.begin(),areaSorted.end());
-	//cout<<"Area vecotr length: "<<area.size()<<endl;
-
-	if (area.size() == 0 || arcs.size() == 0)
+	if (area.size() == 0 || arcs.size() == 0) //if we have no valid areas of interest, return
 		return;
-	//cout<<"Contour with biggest area: "<< *max_element(area.begin(),area.end())<<endl;
-
-	//for(int i = 0;i<9;i++)
-	//{
-	//	cout<<areaSorted[i]<<endl;
-	//}	
-
+	
 	///  Get the mass centers:
 	vector<Point2f> mc(contours.size());
 	for (size_t i = 0; i < contours.size(); i++)
@@ -216,7 +155,7 @@ void thresh_callback(int, void*)
 	if (needDrawing.size() == 0)
 		return;
 
-	if (*rubiks == 5 || *simon == 5 || *etch == 5)
+	if (*rubiks == 5 || *simon == 5 || *etch == 5) //if we have a hit, lets tell the Arduino what we have
 		printObject(needDrawing, mc);
 
 
@@ -224,6 +163,7 @@ void thresh_callback(int, void*)
 
 }
 
+//this function is used to determine what object we have by looking at the range on the areas
 vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* etch, int* simon)
 {
 	int s = 0;
@@ -233,37 +173,32 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 	vector<int> sIdx;
 	vector<int> rIdx;
 
-
+	//iterate over all the areas we found in the image
 	for (size_t i = 0; i < area.size(); i++)
 	{
-		if(area[i]>6000 && area[i]<11000)
+		if(area[i]>6000 && area[i]<11000) //range for rubik's
 		{
 			r++;
 			rIdx.push_back(i);
 			continue;
 		}
 
-		if((area[i]>90000)&&(area[i]<110000))
+		if((area[i]>90000)&&(area[i]<110000)) //range for simon
 		{
 			s++;
 			sIdx.push_back(i);
 			continue;
 		}
-		if(area[i]>50&&area[i]<80)
+		if(area[i]>50&&area[i]<80) //range for etch
 		{
 			e++;
 			eIdx.push_back(i);
 			continue;
 		}	
-		
-		
-
-
-
 	}
-	cout << "e: " << e << "\tr: " << r << "\ts: " << s << endl;
+	cout << "e: " << e << "\tr: " << r << "\ts: " << s << endl; //sanity check
 
-	if (r == 9)
+	if (r == 9) // nine matches means rubik's cube
 	{
 		(*rubiks)++;
 		*etch = 0;
@@ -273,7 +208,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 
 	}
 
-	else if (s == 1)
+	else if (s == 1) //one match means simon
 	{
 		(*simon)++;
 		*etch = 0;
@@ -282,7 +217,7 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 		return sIdx;
 
 	}
-	else if (e == 1 && r<4)
+	else if (e == 1 && r<4) //one match means etch
 	{
 		(*etch)++;
 		*simon = 0;
@@ -292,35 +227,21 @@ vector<int> whatObj(vector<double> area, vector<double> arcs, int* rubiks, int* 
 	}
 	vector<int> emptyVector;
 	return emptyVector;
-
-
 }
 
+//this function is used to tell the arduino how far to shuffle
 void printShuffle(float Diff)
 {
 		
 	char buf = '\0';
-	/*
-	do
-	{
-		read(USB, &buf, 1);
-
-	} while (buf != 'X');
-	cout << "Char from Arduino: " << buf << endl;
-			tcflush(USB, TCIFLUSH);
-			*/
-	cout<<"printing shuffle"<<endl;
 	float inches = Diff*IN_PER_PIXEL;
 	int encodes = inches/ENC_PER_INCH;
 	static char float2str[50];
-	cout<<"before sprint"<<endl;
-	int n =sprintf(float2str,"%d",encodes);
+	int n =sprintf(float2str,"%d",encodes); //print number of encoder turns to a string
 	cout<<"number of bytes written: "<<n<<endl;
 	cout<<float2str<<endl;
 	//need to write how many inches to shuffle (or cm)
 	write(USB, float2str, n);
-
-
 
 	/* Whole response*/
 	std::string response;
@@ -329,16 +250,15 @@ void printShuffle(float Diff)
 	{
 		read(USB, &buf, 1);
 
-	} while (buf != 'M');
-	//response.append( &buf );
-	//tcflush(USB, TCIFLUSH);
+	} while (buf != 'M'); //wait until Arduino has confirmed it moved
 	cout << "Char from Arduino: " << buf << endl;
 
 }
 
+//used to print the object it saw to the arduino
 void printObject(vector<int> needDrawing, vector<Point2f> mc)
 {
-	//auto BigArea;
+
 	int index;
 
 	if (*rubiks == 5)
@@ -348,31 +268,29 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		*rubiks = 0;
 		float average = 0;
 
-		for (int i = 0; i < needDrawing.size(); i++)
+		for (int i = 0; i < needDrawing.size(); i++)//determine how far out of alignment we are in the x direction
 		{
 			average += midPoint.x-mc[needDrawing[i]].x;
 		}
 
 		average = (float)(average /needDrawing.size());
 		cout<<average<<endl;
-		if (abs(average) > 30)
+		if (abs(average) > 30) //if the average is more than 30 pixels away from the center, we need to shuffle
 		{
 			write(USB, "X", 1);
-		
 			printShuffle(average);
 		}
 		else
 		{
-			write(USB, "2", 1);
+			write(USB, "2", 1); //tell arduino we saw a Rubik's cube
 			int n = 0;
 			char buf = '\0';
 			/* Whole response*/
 			do
 			{
 				read(USB, &buf, 1);
-			} while (buf != 'R');
+			} while (buf != 'R'); //wait for confirmation from the arduino
 			cout << "Char from Arduino: " << buf << endl;
-			//tcflush(USB, TCIFLUSH);
 		}
 
 	}
@@ -383,15 +301,15 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		*etch = 0;
 		*rubiks = 0;
 		float average = 0;
-		//BigArea = max_element(needDrawing.begin(), needDrawing.end());
-		for (int i = 0; i < needDrawing.size(); i++)
+
+		for (int i = 0; i < needDrawing.size(); i++)//determine how far out of alignment we are in the x direction
 		{
 			average += midPoint.x-mc[needDrawing[i]].x;
 		}
 
 		average = (float)(average /needDrawing.size());
 		cout<<average<<endl;
-		if (abs(average) > 30)
+		if (abs(average) > 30)//if the average is more than 30 pixels away from the center, we need to shuffle
 		{
 			write(USB, "X", 1);
 
@@ -399,7 +317,7 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		}
 		else
 		{
-			write(USB, "3", 1);
+			write(USB, "3", 1); //tell the Arduino we saw a Simon
 			int n = 0;
 			char buf = '\0';
 			/* Whole response*/
@@ -408,9 +326,8 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 			do
 			{
 				read(USB, &buf, 1);
-			} while (buf != 'S');
+			} while (buf != 'S'); //wait for response
 			cout << "Char from Arduino: " << buf << endl;
-			//tcflush(USB, TCIFLUSH);
 		}
 
 	}
@@ -421,12 +338,11 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		*etch = 0;
 		*rubiks = 0;
 
-		//BigArea = max_element(needDrawing.begin(), needDrawing.end());
-		index = distance(needDrawing.begin(), max_element(needDrawing.begin(), needDrawing.end()));
+		index = distance(needDrawing.begin(), max_element(needDrawing.begin(), needDrawing.end())); //find the index of the largest area since this will be the screen
 		Point2f offset = midPoint - mc[needDrawing[index]];
 
 		cout<<offset.x<<endl;
-		if (abs(offset.x) > 30)
+		if (abs(offset.x) > 30) //if the offset is greater than 30 pixels
 		{
 			write(USB, "X", 1);
 			printShuffle(offset.x);
@@ -434,7 +350,7 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 		else
 		{
 
-			write(USB, "1", 1);
+			write(USB, "1", 1); //tell the arduino we saw an etch a sketch
 			int n = 0;
 			char buf = '\0';
 
@@ -444,8 +360,7 @@ void printObject(vector<int> needDrawing, vector<Point2f> mc)
 			do
 			{
 				read(USB, &buf, 1);
-			} while (buf != 'E');
-			//tcflush(USB, TCIFLUSH);
+			} while (buf != 'E'); //wait for confirmation from the arduino
 			cout << "Char from Arduino: " << buf << endl;
 		}
 
